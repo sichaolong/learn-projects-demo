@@ -1,0 +1,83 @@
+spring:
+#  # 默认数据源
+#  datasource:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://127.0.0.1:3306/test_db_sharding?characterEncoding=utf-8&allowMultiQueries=true&serverTimezone=Asia/Shanghai
+#    username: root
+#    password: root
+
+  # sharding-jdbc
+  main:
+    allow-bean-definition-overriding: true
+  shardingsphere:
+    datasource:
+      names: master1,master2,slave1,slave2
+      # 数据源
+      master1:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driverClassName: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://localhost:3306/test_db_sharding_1
+        username: root
+        password: root
+      master2:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driverClassName: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://localhost:3306/test_db_sharding_2
+        username: root
+        password: root
+      slave1:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driverClassName: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://localhost:3307/test_db_sharding_1
+        username: root
+        password: root
+      slave2:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driverClassName: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://localhost:3307/test_db_sharding_2
+        username: root
+        password: root
+    sharding:
+      #配置默认数据源ds1 默认数据源,主要用于写
+      master-slave-rules:
+        ms1:
+          master-data-source-name: master1
+          slave-data-source-names:
+            - slave1
+        ms2:
+          master-data-source-name: master2
+          slave-data-source-names:
+            - slave2
+      # 分片规则
+      tables:
+        # user表分片规则
+        user:
+          actual-data-nodes: ms${1..2}.user_${1..2}
+          # 分库规则
+          database-strategy:
+            inline:
+              sharding-column: id
+              algorithm-expression: ms${id % 2 + 1}
+          # 分表规则
+          table-strategy:
+            inline:
+              sharding-column: age
+              algorithm-expression: user_${age % 2 + 1}
+          key-generator:
+            type: SNOWFLAKE
+            column: id
+        # config表分片规则
+        config:
+          actual-data-nodes: ms${1..2}.config
+          key-generator:
+            type: SNOWFLAKE
+            column: id
+      # 广播表
+      broadcast-tables:
+        - config
+    props:
+      sql:
+        show: true
+
+
+

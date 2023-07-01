@@ -8,6 +8,7 @@
         <option value="$PROJECT_DIR$/jmh-demo/pom.xml" />
         <option value="$PROJECT_DIR$/nexus-sonatype-maven-demo/pom.xml" />
         <option value="$PROJECT_DIR$/github-maven-demo/pom.xml" />
+        <option value="$PROJECT_DIR$/shardingsphere-demo/pom.xml" />
       </list>
     </option>
   </component>
