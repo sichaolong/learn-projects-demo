@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="henu.soft.tomato.mapper.UserMapper">
+    <select id="getListByQueryBuilderRule" resultType="henu.soft.tomato.model.User">
+        SELECT
+         *
+        FROM user
+        <where>
+            <if test="ruleSQL != ''">
+                ${ruleSQL}
+            </if>
+        </where>
+    </select>
+</mapper>
