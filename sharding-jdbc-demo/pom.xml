@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>scl</groupId>
-    <artifactId>shardingsphere-demo</artifactId>
+    <artifactId>sharding-jdbc-demo</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>shardingsphere-demo</name>
-    <description>shardingsphere-demo</description>
+    <name>sharding-jdbc-demo</name>
+    <description>sharding-jdbc-demo</description>
     <properties>
         <java.version>11</java.version>
     </properties>
