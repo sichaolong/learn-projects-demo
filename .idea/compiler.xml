@@ -7,20 +7,27 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="nexus-sonatype-maven-demo" />
-        <module name="shardingsphere-demo" />
+        <module name="sharding-jdbc-demo" />
         <module name="github-maven-demo" />
+        <module name="ej2-query-builder-demo-scl" />
+        <module name="sharding-proxy-demo" />
+        <module name="nexus-sonatype-maven-demo" />
         <module name="learn-projects-demo" />
         <module name="jmh-demo" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="learn-projects-demo (1)" target="11" />
+      <module name="learn-projects-demo (2)" target="11" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="github-maven-demo" options="-parameters" />
       <module name="jmh-demo" options="-parameters" />
       <module name="nexus-sonatype-maven-demo" options="-parameters" />
-      <module name="shardingsphere-demo" options="-parameters" />
+      <module name="sharding-jdbc-demo" options="-parameters" />
+      <module name="sharding-proxy-demo" options="-parameters" />
     </option>
   </component>
 </project>

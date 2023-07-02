@@ -2,9 +2,5 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/github-maven-demo" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/jmh-demo" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/nexus-sonatype-maven-demo" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/shardingsphere-demo" vcs="Git" />
   </component>
 </project>
