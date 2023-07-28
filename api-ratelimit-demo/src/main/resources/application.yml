@@ -1,0 +1,9 @@
+spring:
+  redis:
+    host: localhost
+    database: 1
+
+  application:
+    name: api-ratelimit-demo
+server:
+  port: 8080
