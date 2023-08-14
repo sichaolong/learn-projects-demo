@@ -10,6 +10,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>local-memory-cache-demo</module>
+        <module>data-stego-demo</module>
     </modules>
 
     <properties>
