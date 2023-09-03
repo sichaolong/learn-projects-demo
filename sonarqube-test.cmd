@@ -1,0 +1,1 @@
+mvn clean verify sonar:sonar -Dsonar.projectKey=sonar-demo -Dsonar.projectName='sonar-demo' -Dsonar.host.url=http://120.46.82.131:9000 -Dsonar.token=sqp_33b351d1d20d7faa26ba9668873873ca02eadf57

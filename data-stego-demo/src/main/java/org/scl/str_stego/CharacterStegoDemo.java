@@ -30,6 +30,47 @@ public class CharacterStegoDemo {
         // nt codePoint = str.codePointAt(7);
         // System.out.println(codePoint); // 30028
 
+        String s1 = "206A\u206A206A";
+        String s2 = "206B\u206B206B";
+        String s3 = "206C\u206C206C";
+        String s4 = "206D\u206D206D";
+        String s5 = "206E\u206E206E";
+        String s6 = "206F\u206F206F";
+
+        System.out.println(s1);
+        System.out.println(s2);
+        System.out.println(s3);
+        System.out.println(s4);
+        System.out.println(s5);
+        System.out.println(s6);
+
+
+        String s7 = "2066\u20662066";
+        // String s8 = "2067\u20672067";
+        String s9 = "2068\u20682068";
+        String s10 = "2069\u20692069";
+
+        System.out.println(s7);
+        // System.out.println(s8);
+        System.out.println(s9);
+        System.out.println(s10);
+
+
+        System.out.println("2061\u20612061");
+        System.out.println("2062\u20622062");
+        System.out.println("2063\u20632063");
+        System.out.println("2064\u20642064");
+        System.out.println("2065\u20652065");
+
+        System.out.println("2028\u20282028");
+        System.out.println("这只字母A\u2028A这是字母");
+        System.out.println("这是中文\u2028这是中文");
+
+        System.out.println("2029\u20292029");
+        System.out.println("这只字母A\u2029A这是字母");
+        System.out.println("这是中文\u2029这是中文");
+
+
         // 加密
         String encrypted = encrypt("sichaolong", "1234567812345678");
         System.out.println(String.format("加密完成【%s】，长度为：【%s】",encrypted,encrypted.length()));

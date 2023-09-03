@@ -12,6 +12,12 @@
         <option value="$PROJECT_DIR$/ej2-query-builder-demo-scl/pom.xml" />
         <option value="$PROJECT_DIR$/sharding-jdbc-demo/pom.xml" />
         <option value="$PROJECT_DIR$/sharding-proxy-demo/pom.xml" />
+        <option value="$PROJECT_DIR$/qrcode-login/pom.xml" />
+        <option value="$PROJECT_DIR$/api-ratelimit-demo/pom.xml" />
+        <option value="$PROJECT_DIR$/mybatis-flex-demo/pom.xml" />
+        <option value="$PROJECT_DIR$/elastic-search-demo/pom.xml" />
+        <option value="$PROJECT_DIR$/elastic-search-demo/springboot-elastic-search-demo/pom.xml" />
+        <option value="$PROJECT_DIR$/elastic-search-demo/springboot-elastic-search-clientapi-demo/pom.xml" />
       </list>
     </option>
   </component>

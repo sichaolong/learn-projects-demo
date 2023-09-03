@@ -14,6 +14,7 @@ import java.util.Objects;
 public enum ZeroWidthCharacterEnum {
 
 
+
     ZERO_WIDTH_CHARACTER_SPACE("space", "零宽间隔器", '\uFE0A', 65034, '0'),
     ZERO_WIDTH_CHARACTER_JOINER("joiner", "零宽连字标志", '\uFE0B', 65035, '1'),
     ZERO_WIDTH_CHARACTER_NONJOINER("non joiner", "零宽非连接符", '\uFE0C', 65036, '2'),
