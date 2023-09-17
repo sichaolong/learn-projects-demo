@@ -10,9 +10,18 @@
     <packaging>pom</packaging>
     <modules>
         <module>local-memory-cache-demo</module>
+        <module>api-ratelimit-demo</module>
         <module>data-stego-demo</module>
         <module>data-sync-demo</module>
-        <module>elastic-search-demo</module>
+        <module>ej2-query-builder-demo-scl</module>
+        <module>github-maven-demo</module>
+        <module>jmh-demo</module>
+        <module>mybatis-flex-demo</module>
+        <module>nexus-sonatype-maven-demo</module>
+        <module>qrcode-login</module>
+        <module>sharding-jdbc-demo</module>
+        <module>sharding-proxy-demo</module>
+        <module>learn-rocketmq-demo</module>
     </modules>
 
     <properties>

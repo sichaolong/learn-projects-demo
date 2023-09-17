@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
  * @Auther: sichaolong
  * @Date: 2023/7/28 14:24
  * @Description:
- * 0宽字符隐写demo，采用二进制
+ * 0宽字符隐写demo
  */
 public class CharacterStegoDemo {
 

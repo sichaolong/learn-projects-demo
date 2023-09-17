@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class SpringbootElasticSearchClientapiDemoApplication {
+public class SpringbootRocketmqDemoApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(SpringbootElasticSearchClientapiDemoApplication.class, args);
+        SpringApplication.run(SpringbootRocketmqDemoApplication.class, args);
     }
 
 }

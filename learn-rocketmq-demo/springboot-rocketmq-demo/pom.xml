@@ -9,37 +9,21 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>scl</groupId>
-    <artifactId>springboot-elastic-search-clientapi-demo</artifactId>
+    <artifactId>springboot-rocketmq-demo</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>springboot-elastic-search-clientapi-demo</name>
-    <description>springboot-elastic-search-clientapi-demo</description>
+    <name>springboot-rocketmq-demo</name>
+    <description>springboot-rocketmq-demo</description>
     <properties>
         <java.version>11</java.version>
     </properties>
     <dependencies>
-
-        <dependency>
-            <groupId>co.elastic.clients</groupId>
-            <artifactId>elasticsearch-java</artifactId>
-            <version>8.9.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>2.12.3</version>
-        </dependency>
-
-
-        <dependency>
-            <groupId>jakarta.json</groupId>
-            <artifactId>jakarta.json-api</artifactId>
-            <version>2.0.1</version>
-        </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
         <dependency>
@@ -51,6 +35,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.rocketmq</groupId>
+            <artifactId>rocketmq-spring-boot-starter</artifactId>
+            <version>2.2.3</version>
         </dependency>
     </dependencies>
 
