@@ -1,3 +1,0 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  com.xkw.bcom.rocketmq.autoconfigure.config.XkwRocketmqConsumerAutoConfiguration,\
-  com.xkw.bcom.rocketmq.autoconfigure.config.XkwRocketmqProducerAutoConfiguration
