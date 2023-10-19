@@ -1,0 +1,14 @@
+Apache RocketMQ
+Copyright 2016-2020 The Apache Software Foundation
+
+This product includes software developed at
+The Apache Software Foundation (http://www.apache.org/).
+
+2022.06.30
+These files have been modified to support namespace:
+org.apache.rocketmq.spring.support.DefaultRocketMQListenerContainer
+org.apache.rocketmq.spring.autoconfigure.RocketMQProperties
+org.apache.rocketmq.spring.autoconfigure.RocketMQAutoConfiguration
+org.apache.rocketmq.spring.autoconfigure.ExtProducerResetConfiguration
+org.apache.rocketmq.spring.annotation.RocketMQMessageListener
+org.apache.rocketmq.spring.annotation.ExtRocketMQTemplateConfiguration

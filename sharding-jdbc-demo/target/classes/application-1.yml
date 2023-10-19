@@ -66,6 +66,7 @@ spring:
           key-generator:
             type: SNOWFLAKE
             column: id
+        # config表分片规则
         config:
           actual-data-nodes: ms${1..2}.config
           key-generator:

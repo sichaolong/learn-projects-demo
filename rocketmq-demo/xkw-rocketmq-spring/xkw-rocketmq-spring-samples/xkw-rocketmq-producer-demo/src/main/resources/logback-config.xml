@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <springProperty name="ROOT_LEVEL" source="log.root-level" />
+    <springProperty name="HOME" source="log.home" />
+    <springProperty name="MYBATIS_LOG" source="log.mybatis-log" />
+    <springProperty name="MAPPER_PACKAGE" source="log.mapper-package" />
+    <springProperty name="MYBATIS_STDOUT" source="log.mybatis-stdout" />
+
+    <property name="FILE_NAME" value="%d{yyyy_MM_dd}.%i.log" />
+    <property name="CHARSET" value="UTF-8" />
+    <property name="MAX_HISTORY" value="30" />
+    <property name="MAX_SIZE" value="1024MB" />
+    <property name="PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{5} - %msg%n" />
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${PATTERN}</pattern>
+            <!--
+            为了兼容docker日志驱动，
+            docker日志驱动不支持多行日志，对于多行日志（如错误日志），会把每一行当作一个事件，
+            日志发送到logstash之后，就变成了多个日志，对于跟踪异常堆栈信息非常不方便，
+            所以将标准输出日志的换行替换为\\n，使多行日志合并成单行日志，
+            logstash需要增加一个这样的过滤器，重新将\\n还原成换行，完整配置参考jenkins/logstash.conf：
+            mutate {
+                gsub => ["message","\\n","
+            "]
+            }
+            只有测试环境需要定制日志格式
+            -->
+            <springProfile name="test">
+                <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{5} - %replace(%msg%n%ex){'[\r\n]+', '\\n'}%nopex%n</pattern>
+            </springProfile>
+            <charset>${CHARSET}</charset>
+        </encoder>
+    </appender>
+
+    <appender name="TRACE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <FileNamePattern>${HOME}/trace/${FILE_NAME}</FileNamePattern>
+            <MaxHistory>${MAX_HISTORY}</MaxHistory>
+            <MaxFileSize>${MAX_SIZE}</MaxFileSize>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${PATTERN}</pattern>
+            <charset>${CHARSET}</charset>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>TRACE</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <appender name="DEBUG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <FileNamePattern>${HOME}/debug/${FILE_NAME}</FileNamePattern>
+            <MaxHistory>${MAX_HISTORY}</MaxHistory>
+            <MaxFileSize>${MAX_SIZE}</MaxFileSize>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${PATTERN}</pattern>
+            <charset>${CHARSET}</charset>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>DEBUG</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <appender name="INFO" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <FileNamePattern>${HOME}/info/${FILE_NAME}</FileNamePattern>
+            <MaxHistory>${MAX_HISTORY}</MaxHistory>
+            <MaxFileSize>${MAX_SIZE}</MaxFileSize>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${PATTERN}</pattern>
+            <charset>${CHARSET}</charset>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>INFO</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <appender name="WARN" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <FileNamePattern>${HOME}/warn/${FILE_NAME}</FileNamePattern>
+            <MaxHistory>${MAX_HISTORY}</MaxHistory>
+            <MaxFileSize>${MAX_SIZE}</MaxFileSize>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${PATTERN}</pattern>
+            <charset>${CHARSET}</charset>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>WARN</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <appender name="ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <FileNamePattern>${HOME}/error/${FILE_NAME}</FileNamePattern>
+            <MaxHistory>${MAX_HISTORY}</MaxHistory>
+            <MaxFileSize>${MAX_SIZE}</MaxFileSize>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${PATTERN}</pattern>
+            <charset>${CHARSET}</charset>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <root level="${ROOT_LEVEL}">
+        <appender-ref ref="STDOUT" />
+        <appender-ref ref="TRACE" />
+        <appender-ref ref="DEBUG" />
+        <appender-ref ref="INFO" />
+        <appender-ref ref="WARN" />
+        <appender-ref ref="ERROR" />
+    </root>
+
+    <if condition='property("MYBATIS_LOG").equals("true")'>
+        <then>
+            <appender name="MYBATIS" class="ch.qos.logback.core.rolling.RollingFileAppender">
+                <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                    <FileNamePattern>${HOME}/mybatis/${FILE_NAME}</FileNamePattern>
+                    <MaxHistory>${MAX_HISTORY}</MaxHistory>
+                    <MaxFileSize>${MAX_SIZE}</MaxFileSize>
+                </rollingPolicy>
+                <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                    <pattern>${PATTERN}</pattern>
+                    <charset>${CHARSET}</charset>
+                </encoder>
+            </appender>
+
+            <logger name="${MAPPER_PACKAGE}" level="TRACE" additivity="false">
+                <appender-ref ref="MYBATIS" />
+                <if condition='property("MYBATIS_STDOUT").equals("true")'>
+                    <then>
+                        <appender-ref ref="STDOUT" />
+                    </then>
+                </if>
+            </logger>
+        </then>
+    </if>
+</configuration>

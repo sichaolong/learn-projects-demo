@@ -9,33 +9,40 @@
         <outputRelativeToContentRoot value="true" />
         <module name="sharding-jdbc-demo" />
         <module name="qrcode-login" />
-        <module name="springboot-elastic-search-clientapi-demo" />
         <module name="mybatis-flex-demo" />
-        <module name="springboot-elastic-search-demo" />
         <module name="data-stego-demo" />
+        <module name="data-sync-cdc-consumer-demo" />
+        <module name="llm-chatgpt-demo" />
         <module name="local-memory-cache-demo" />
         <module name="jmh-demo" />
+        <module name="openai-chatgpt-demo" />
         <module name="github-maven-demo" />
-        <module name="elastic-search-demo" />
         <module name="ej2-query-builder-demo-scl" />
         <module name="sharding-proxy-demo" />
         <module name="data-sync-demo" />
         <module name="nexus-sonatype-maven-demo" />
+        <module name="learn-rocketmq-demo" />
         <module name="api-ratelimit-demo" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="elastic-search-demo" target="11" />
+      <module name="learn-lucene-demo" target="11" />
       <module name="learn-projects-demo (1)" target="11" />
       <module name="learn-projects-demo (2)" target="11" />
+      <module name="springboot-elastic-search-clientapi-demo" target="11" />
+      <module name="springboot-elastic-search-demo" target="11" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="api-ratelimit-demo" options="-parameters" />
+      <module name="data-sync-cdc-consumer-demo" options="-parameters" />
       <module name="github-maven-demo" options="-parameters" />
       <module name="jmh-demo" options="-parameters" />
       <module name="mybatis-flex-demo" options="-parameters" />
       <module name="nexus-sonatype-maven-demo" options="-parameters" />
+      <module name="openai-chatgpt-demo" options="-parameters" />
       <module name="qrcode-login" options="-parameters" />
       <module name="sharding-jdbc-demo" options="-parameters" />
       <module name="sharding-proxy-demo" options="-parameters" />
