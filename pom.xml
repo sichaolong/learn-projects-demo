@@ -23,6 +23,7 @@
         <module>sharding-proxy-demo</module>
         <module>learn-rocketmq-demo</module>
         <module>llm-chatgpt-demo</module>
+        <module>rxjava-demo</module>
     </modules>
 
     <properties>
