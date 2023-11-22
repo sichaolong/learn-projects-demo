@@ -24,6 +24,7 @@
         <module>learn-rocketmq-demo</module>
         <module>llm-chatgpt-demo</module>
         <module>rxjava-demo</module>
+        <module>milvus-demo</module>
     </modules>
 
     <properties>

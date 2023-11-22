@@ -8,6 +8,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="sharding-jdbc-demo" />
+        <module name="milvus-demo" />
         <module name="qrcode-login" />
         <module name="mybatis-flex-demo" />
         <module name="data-stego-demo" />
@@ -16,6 +17,7 @@
         <module name="local-memory-cache-demo" />
         <module name="jmh-demo" />
         <module name="openai-chatgpt-demo" />
+        <module name="rxjava-demo" />
         <module name="github-maven-demo" />
         <module name="ej2-query-builder-demo-scl" />
         <module name="sharding-proxy-demo" />
