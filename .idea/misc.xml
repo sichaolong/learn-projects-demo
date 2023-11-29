@@ -20,6 +20,7 @@
         <option value="$PROJECT_DIR$/elastic-search-demo/springboot-elastic-search-clientapi-demo/pom.xml" />
         <option value="$PROJECT_DIR$/data-sync-demo/data-sync-cdc-consumer-demo/pom.xml" />
         <option value="$PROJECT_DIR$/llm-chatgpt-demo/openai-chatgpt-demo/pom.xml" />
+        <option value="$PROJECT_DIR$/shiro-demo/pom.xml" />
       </list>
     </option>
   </component>

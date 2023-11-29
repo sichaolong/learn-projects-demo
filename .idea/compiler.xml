@@ -7,6 +7,7 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="shiro-demo" />
         <module name="sharding-jdbc-demo" />
         <module name="milvus-demo" />
         <module name="qrcode-login" />
@@ -19,6 +20,7 @@
         <module name="openai-chatgpt-demo" />
         <module name="rxjava-demo" />
         <module name="github-maven-demo" />
+        <module name="azure-openai-demo" />
         <module name="ej2-query-builder-demo-scl" />
         <module name="sharding-proxy-demo" />
         <module name="data-sync-demo" />
@@ -48,6 +50,7 @@
       <module name="qrcode-login" options="-parameters" />
       <module name="sharding-jdbc-demo" options="-parameters" />
       <module name="sharding-proxy-demo" options="-parameters" />
+      <module name="shiro-demo" options="-parameters" />
       <module name="springboot-elastic-search-clientapi-demo" options="-parameters" />
       <module name="springboot-elastic-search-demo" options="-parameters" />
     </option>
