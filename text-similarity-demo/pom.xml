@@ -8,15 +8,20 @@
         <artifactId>learn-projects-demo</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-    <packaging>pom</packaging>
 
-
-    <artifactId>llm-chatgpt-demo</artifactId>
+    <artifactId>text-similarity-demo</artifactId>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+            <version>4.3</version>
+        </dependency>
+    </dependencies>
 
 </project>

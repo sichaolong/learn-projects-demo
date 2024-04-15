@@ -22,9 +22,11 @@
         <module>sharding-jdbc-demo</module>
         <module>sharding-proxy-demo</module>
         <module>learn-rocketmq-demo</module>
-        <module>llm-chatgpt-demo</module>
+        <module>llm-demo</module>
         <module>rxjava-demo</module>
         <module>milvus-demo</module>
+        <module>text-similarity-demo</module>
+        <module>simple-java-code</module>
     </modules>
 
     <properties>

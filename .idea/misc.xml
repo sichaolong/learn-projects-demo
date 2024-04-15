@@ -21,10 +21,18 @@
         <option value="$PROJECT_DIR$/data-sync-demo/data-sync-cdc-consumer-demo/pom.xml" />
         <option value="$PROJECT_DIR$/llm-chatgpt-demo/openai-chatgpt-demo/pom.xml" />
         <option value="$PROJECT_DIR$/shiro-demo/pom.xml" />
+        <option value="$PROJECT_DIR$/llm-chatgpt-demo/azure-openai-demo/pom.xml" />
+        <option value="$PROJECT_DIR$/llm-demo/langchain4j-demo/pom.xml" />
       </list>
     </option>
+    <option name="ignoredFiles">
+      <set>
+        <option value="$PROJECT_DIR$/github-maven-demo/pom.xml" />
+        <option value="$PROJECT_DIR$/shiro-demo/pom.xml" />
+      </set>
+    </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="11" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
   </component>
 </project>

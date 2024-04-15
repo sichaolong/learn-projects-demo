@@ -2,8 +2,6 @@
 <project version="4">
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/api-ratelimit-demo/src/main/java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/azure-openai-demo/src/main/java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/azure-openai-demo/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/data-stego-demo/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/data-stego-demo/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/data-sync-demo/data-sync-cdc-consumer-demo/src/main/java" charset="UTF-8" />
@@ -21,8 +19,14 @@
     <file url="file://$PROJECT_DIR$/learn-rocketmq-demo/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/learn-rocketmq-demo/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/llm-chatgpt-demo/openai-chatgpt-demo/src/main/java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/llm-chatgpt-demo/src/main/java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/llm-chatgpt-demo/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/llm-demo/azure-openai-demo/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/llm-demo/azure-openai-demo/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/llm-demo/langchain4j-demo/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/llm-demo/openai-chatgpt-demo/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/llm-demo/spark-desk-demo/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/llm-demo/spark-desk-demo/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/llm-demo/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/llm-demo/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/local-memory-cache-demo/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/local-memory-cache-demo/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/milvus-demo/src/main/java" charset="UTF-8" />
@@ -35,8 +39,14 @@
     <file url="file://$PROJECT_DIR$/sharding-jdbc-demo/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/sharding-proxy-demo/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/shiro-demo/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/simple-java-code/analysize-mysql-phantomreference-demo/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/simple-java-code/analysize-mysql-phantomreference-demo/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/simple-java-code/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/simple-java-code/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/text-similarity-demo/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/text-similarity-demo/src/main/resources" charset="UTF-8" />
     <file url="file://$USER_HOME$/mysoftware_notinstall/maven-3.9/local_repository/org/springframework/boot/spring-boot-starter-parent/2.7.13/src/main/resources" charset="UTF-8" />
   </component>
 </project>

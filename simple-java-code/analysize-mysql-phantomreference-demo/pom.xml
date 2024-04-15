@@ -5,31 +5,16 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.example</groupId>
-        <artifactId>llm-chatgpt-demo</artifactId>
+        <artifactId>simple-java-code</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-    <artifactId>azure-openai-demo</artifactId>
+
+    <artifactId>analysize-mysql-phantomreference-demo</artifactId>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-
-    <dependencies>
-        <!--azure sdk-->
-        <dependency>
-            <groupId>com.azure</groupId>
-            <artifactId>azure-ai-openai</artifactId>
-            <version>1.0.0-beta.5</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.theokanning.openai-gpt3-java</groupId>
-            <artifactId>service</artifactId>
-            <version>0.12.0</version>
-        </dependency>
-
-    </dependencies>
 
 </project>

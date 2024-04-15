@@ -1,2 +1,2 @@
-JMH S 20 scl.jmhdemo.JmhHello S 48 scl.jmhdemo.generated.JmhHello_stringAdd_jmhTest S 9 stringAdd S 11 AverageTime E A 1 1 1 E I 1 1 E E I 1 1 E E I 1 1 E E E E E E U 12 MILLISECONDS E E 
 JMH S 20 scl.jmhdemo.JmhHello S 58 scl.jmhdemo.generated.JmhHello_stringBuilderAppend_jmhTest S 19 stringBuilderAppend S 11 AverageTime E A 1 1 1 E I 1 1 E E I 1 1 E E I 1 1 E E E E E E U 12 MILLISECONDS E E 
+JMH S 20 scl.jmhdemo.JmhHello S 48 scl.jmhdemo.generated.JmhHello_stringAdd_jmhTest S 9 stringAdd S 11 AverageTime E A 1 1 1 E I 1 1 E E I 1 1 E E I 1 1 E E E E E E U 12 MILLISECONDS E E 
