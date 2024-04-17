@@ -5,6 +5,7 @@ import dev.langchain4j.memory.chat.MessageWindowChatMemory;
 import dev.langchain4j.model.qianfan.QianfanChatModel;
 import dev.langchain4j.service.AiServices;
 import dev.langchain4j.store.memory.chat.InMemoryChatMemoryStore;
+import io.github.cdimascio.dotenv.Dotenv;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import scl.langchain4j.aiservice.Assistant;
@@ -20,13 +21,17 @@ public class QianfanDemo {
     private static final Logger LOGGER = LoggerFactory.getLogger(QianfanDemo.class);
 
     public static void main(String[] args) {
-        String accessKey = "";
-        String accessSecretKey = "";
 
-        String apiKey = "";
-        String secretKey = "";
-        String modelName = "";
-        String endpoint = "";
+        Dotenv dotenv = Dotenv.configure().load();
+
+        String apiKey = dotenv.get("QIANFAN_API_KEY");
+        String secretKey = dotenv.get("QIANFAN_SECRET_KEY");
+        String modelName = "ERNIE-3.5-8K";
+        String endpoint = "completions";
+
+        System.out.println(String.format("The current QIANFAN_API_KEY is: %s.", dotenv.get("QIANFAN_API_KEY")));
+        System.out.println(String.format("The current QIANFAN_SECRET_KEY is: %s.", dotenv.get("QIANFAN_API_KEY")));
+
 
 
         /*
@@ -44,6 +49,8 @@ public class QianfanDemo {
                 .build();
         };
 
+
+
         // qianfan model
         QianfanChatModel qianfanChatModel = QianfanChatModel.builder()
             .apiKey(apiKey)
@@ -55,10 +62,11 @@ public class QianfanDemo {
         // tools
         AssistantTools assistantTool = new AssistantTools();
 
+        // assistant
         Assistant assistant = AiServices.builder(Assistant.class)
             .chatLanguageModel(qianfanChatModel)
             .chatMemoryProvider(chatMemoryProvider)
-            .tools(assistantTool)
+            // .tools(assistantTool)
             .build();
 
         LOGGER.info("LangChain4J AiServices are initialized, we are using ERNIE-3.5-8K model.");
@@ -67,15 +75,6 @@ public class QianfanDemo {
         String question = "你好";
         String response = assistant.chat("user1", question);
         System.out.println(response);
-
-
-        /*
-        0.29.1版本报错：
-        Exception in thread "main" java.lang.IllegalArgumentException: text cannot be null or blank
-        错误码3:【用户输入错误】调用的API不存在，请检查后重新尝试。
-
-
-         */
 
     }
 }
