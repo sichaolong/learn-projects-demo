@@ -1,4 +1,4 @@
-package org.example.kdtree;
+package java.org.example.kdtree;
 
 import java.util.ArrayList;
 import java.util.List;

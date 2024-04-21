@@ -1,4 +1,4 @@
-package org.example;
+package java.org.example;
 
 /**
  * @author sichaolong

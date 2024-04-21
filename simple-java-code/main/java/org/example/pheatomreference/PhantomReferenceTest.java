@@ -1,4 +1,4 @@
-package org.example.pheatomreference;
+package java.org.example.pheatomreference;
 
 import java.lang.ref.PhantomReference;
 import java.lang.ref.ReferenceQueue;

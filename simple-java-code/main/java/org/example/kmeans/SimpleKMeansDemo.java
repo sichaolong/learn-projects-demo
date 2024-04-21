@@ -1,4 +1,4 @@
-package org.example.kmeans;
+package java.org.example.kmeans;
 
 import java.util.ArrayList;
 import java.util.List;
