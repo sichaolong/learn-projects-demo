@@ -1,0 +1,1 @@
+本项目是测试项目，测试jar包传到nexus sonatype仓库，使用该项目见github-maven-demo的pom文件
