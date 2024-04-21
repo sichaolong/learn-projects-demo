@@ -14,6 +14,9 @@
     <name>qrcode-login</name>
     <description>qrcode-login</description>
     <properties>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>11</java.version>
         <hutool.version>4.3.2</hutool.version>
         <fastjson.version>1.2.58</fastjson.version>
