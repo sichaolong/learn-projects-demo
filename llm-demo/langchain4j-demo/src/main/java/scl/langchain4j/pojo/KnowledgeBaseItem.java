@@ -15,16 +15,40 @@ import lombok.ToString;
 @ToString
 public class KnowledgeBaseItem {
 
+
+    /**
+     * 试题ID
+     */
     private String qid;
+
+    /**
+     * 试题题干（纯文本）
+     */
 
     private String stem;
 
+    /**
+     * 试题答案（纯文本）
+     */
+
     private String answer;
+
+    /**
+     * 试题解析（纯文本）
+     */
 
     private String explanation;
 
-    private String courseId;
+    /**
+     * 试题课程ID
+     */
 
-    private String questionType;
+    private Integer courseId;
+
+    /**
+     * 试题题型ID
+     */
+
+    private String typeId;
 
 }

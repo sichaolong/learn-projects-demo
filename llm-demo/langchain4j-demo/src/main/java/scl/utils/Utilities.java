@@ -31,4 +31,30 @@ public class Utilities {
         sdf.setTimeZone(utc);
         return sdf.format(date);
     }
+
+    /**
+     * 全角字符转半角
+     *
+     * @param src
+     * @return DBC case
+     */
+    public static String sbc2dbcCase(String src) {
+        if (src == null) {
+            return null;
+        }
+        char[] c = src.toCharArray();
+        for (int i = 0; i < c.length; i++) {
+            // WHITESPCE ASCII-32
+            if (c[i] == 12288) {
+                c[i] = (char) 32;
+                continue;
+            }
+
+            // ASCII character 33-126 <-> unicode 65281-65374
+            if (c[i] > 65280 && c[i] < 65375) {
+                c[i] = (char) (c[i] - 65248);
+            }
+        }
+        return new String(c);
+    }
 }

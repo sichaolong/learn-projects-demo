@@ -38,8 +38,35 @@ public class MilvusConfig {
     @Value("${milvus.port}")
     private Integer port;
 
+    /**
+     * 是否开启RAG检索增强
+     */
     @Value("${milvus.rag.retrieveEmbeddingsOnSearch:true}")
-    private boolean retrieveEmbeddingsOnSearch; //是否开启RAG检索增强
+    private boolean retrieveEmbeddingsOnSearch;
+
+    /**
+     * 数据切片大小
+     */
+    @Value("${milvus.rag.maxSegmentSizeInTokens:1000}")
+    private Integer maxSegmentSizeInTokens;
+
+    /**
+     * 发生数据切片时候切片重叠大小
+     */
+    @Value("${milvus.rag.maxOverlapSizeInTokens:0}")
+    private Integer maxOverlapSizeInTokens;
+
+    /**
+     * 召回最大结果数量
+     */
+    @Value("${milvus.rag.recallMaxResults:3}")
+    private Integer recallMaxResults;
+
+    /**
+     * 从本地知识库召回的最小相似性得分
+     */
+    @Value("${milvus.rag.recallMinScore:0.6d}")
+    private Double recallMinScore;
 
 
     /**
@@ -78,7 +105,7 @@ public class MilvusConfig {
      * 本地知识库Embedding组件
      */
     @Bean
-    public EmbeddingModel embeddingModel(){
+    public EmbeddingModel embeddingModel() {
         // 维度384
         return new AllMiniLmL6V2EmbeddingModel();
     }
@@ -91,7 +118,7 @@ public class MilvusConfig {
      */
     @Bean
     public EmbeddingStoreIngestor embeddingStoreIngestor() {
-        DocumentSplitter documentSplitter = DocumentSplitters.recursive(1000, 0, new OpenAiTokenizer(GPT_3_5_TURBO));
+        DocumentSplitter documentSplitter = DocumentSplitters.recursive(maxSegmentSizeInTokens, maxOverlapSizeInTokens, new OpenAiTokenizer(GPT_3_5_TURBO));
         EmbeddingStoreIngestor embeddingStoreIngestor = EmbeddingStoreIngestor.builder()
             .documentSplitter(documentSplitter)
             .embeddingModel(embeddingModel())

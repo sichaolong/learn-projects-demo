@@ -1,6 +1,5 @@
 package scl.langchain4j.store;
 
-import com.alibaba.fastjson.JSON;
 import dev.langchain4j.data.embedding.Embedding;
 import dev.langchain4j.data.segment.TextSegment;
 import dev.langchain4j.internal.Utils;
@@ -29,11 +28,6 @@ import scl.utils.MilvusUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import static dev.langchain4j.store.embedding.milvus.CollectionOperationsExecutor.flush;
-import static dev.langchain4j.store.embedding.milvus.CollectionOperationsExecutor.insert;
-import static dev.langchain4j.store.embedding.milvus.Generator.generateRandomIds;
-import static dev.langchain4j.store.embedding.milvus.Mapper.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
@@ -124,7 +118,6 @@ public class CustomMilvusEmbeddingStore implements EmbeddingStore<TextSegment>, 
 
     /**
      * 创建collection的字段
-     * ps：id是自增的主键，qid为业务主键
      *
      * @return
      */
@@ -133,9 +126,17 @@ public class CustomMilvusEmbeddingStore implements EmbeddingStore<TextSegment>, 
         FieldType id = FieldType.newBuilder()
             .withName(MilvusConstants.Field.ID)
             .withDescription(MilvusConstants.Field.ID_DESC)
-            .withDataType(DataType.Int64)
+            .withDataType(DataType.VarChar)
+            .withMaxLength(MilvusConstants.Field.ID_MAX_LENGTH)
             .withPrimaryKey(true)
-            .withAutoID(true)
+            .build();
+
+
+        FieldType content = FieldType.newBuilder()
+            .withName(MilvusConstants.Field.QUESTION_CONTENT)
+            .withDescription(MilvusConstants.Field.QUESTION_CONTENT_DESC)
+            .withDataType(DataType.VarChar)
+            .withMaxLength(MilvusConstants.Field.QUESTION_CONTENT_MAX_LENGTH)
             .build();
 
         FieldType metadata = FieldType.newBuilder()
@@ -153,6 +154,7 @@ public class CustomMilvusEmbeddingStore implements EmbeddingStore<TextSegment>, 
             .build();
 
         fieldTypeList.add(id);
+        fieldTypeList.add(content);
         fieldTypeList.add(metadata);
         fieldTypeList.add(eigenvalues);
         return fieldTypeList;
@@ -203,7 +205,6 @@ public class CustomMilvusEmbeddingStore implements EmbeddingStore<TextSegment>, 
             metricType,
             consistencyLevel
         );
-
         R<SearchResults> resultsR = milvusService.getMilvusServerClient().search(searchParam);
         SearchResultsWrapper resultsWrapper = new SearchResultsWrapper(resultsR.getData().getResults());
         List<EmbeddingMatch<TextSegment>> matches = MilvusUtils.toEmbeddingMatches(
@@ -213,8 +214,6 @@ public class CustomMilvusEmbeddingStore implements EmbeddingStore<TextSegment>, 
             consistencyLevel,
             retrieveEmbeddingsOnSearch
         );
-
-        log.info("RAG搜索结果：{}", resultsWrapper);
         List<EmbeddingMatch<TextSegment>> result = matches.stream()
             .filter(match -> match.score() >= embeddingSearchRequest.minScore())
             .collect(toList());
@@ -235,7 +234,7 @@ public class CustomMilvusEmbeddingStore implements EmbeddingStore<TextSegment>, 
             .withTopK(maxResults)
             .withMetricType(metricType)
             .withConsistencyLevel(consistencyLevel)
-            .withOutFields(asList(MilvusConstants.Field.ID,MilvusConstants.Field.METADATA,MilvusConstants.Field.EIGENVALUES));
+            .withOutFields(asList(MilvusConstants.Field.ID,MilvusConstants.Field.METADATA,MilvusConstants.Field.EIGENVALUES,MilvusConstants.Field.QUESTION_CONTENT));
 
         if (filter != null) {
             builder.withExpr(MilvusMetadataFilterUtils.map(filter));
@@ -255,11 +254,13 @@ public class CustomMilvusEmbeddingStore implements EmbeddingStore<TextSegment>, 
 
     private void addAllInternal(List<String> ids,List<Embedding> embeddings, List<TextSegment> textSegments) {
         List<InsertParam.Field> fields = new ArrayList<>();
-        fields.add(new InsertParam.Field(MilvusConstants.Field.METADATA, MilvusUtils.toMetadataJsons(textSegments, embeddings.size())));
+        fields.add(new InsertParam.Field(MilvusConstants.Field.ID, ids));
         fields.add(new InsertParam.Field(MilvusConstants.Field.QUESTION_CONTENT, MilvusUtils.toScalars(textSegments, ids.size())));
         fields.add(new InsertParam.Field(MilvusConstants.Field.EIGENVALUES, MilvusUtils.toVectors(embeddings)));
+        fields.add(new InsertParam.Field(MilvusConstants.Field.METADATA, MilvusUtils.toMetadataJsons(textSegments, embeddings.size())));
 
         milvusService.insert(databaseName, collectionName, null, fields);
         milvusService.flash(Arrays.asList(collectionName));
     }
+
 }

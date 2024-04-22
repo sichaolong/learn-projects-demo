@@ -6,7 +6,7 @@ import lombok.Data;
  * @createdate 2024/4/19 14:09
  */
 @Data
-public class ModelInfo extends AbstractModelInfo {
+public class LLMServiceReference extends AbstractModelInfo {
 
-    private AbstractLLMService llmService;
+    private AbstractPlatformService llmService;
 }

@@ -26,22 +26,16 @@ public class CustomMilvusEmbeddingStoreTest {
 
     @Test
     public void testAdd() {
-        float[] vector = new float[128];
+        float[] vector = new float[384];
         for (int i = 0; i < vector.length; i++) {
             vector[i] = (float) Math.random();
         }
         Embedding embedding = new Embedding(vector);
-        String id = customMilvusEmbeddingStore.add(embedding);
-        log.info("add result id:{}",id);
-
-
         Metadata metadata = new Metadata();
         metadata.put("qid","111");
-        metadata.put("content","222");
         TextSegment textSegment = TextSegment.from("test", metadata);
         String metadataJson = customMilvusEmbeddingStore.add(embedding, textSegment);
         log.info("add success metadata:{}",metadataJson);
-
     }
 
 

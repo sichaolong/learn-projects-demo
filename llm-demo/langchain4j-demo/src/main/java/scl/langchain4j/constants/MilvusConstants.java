@@ -13,14 +13,14 @@ public class MilvusConstants {
     /**
      * 库名
      */
-    public static final String DATABASE_NAME = "xkw_jcyy_qbm_questions";
+    public static final String DATABASE_NAME = "xkw_jcyy_qbm_llm_rag_questions";
 
 
     /**
      * 集合名称
      */
 
-    public static final String COLLECTION_NAME_QUESTIONS_ENGLISH_GZ = "llm_rag_questions_english_gz";
+    public static final String COLLECTION_NAME_QUESTIONS_ENGLISH_GZ = "llm_rag_questions_28_2803";
     public static final String COLLECTION_NAME_QUESTIONS_ENGLISH_GZ_DESC = "用于大模型RAG增强检索链的试题平台已经生产（有答案、解析）的试题集合（高中英语）";
 
 
@@ -92,6 +92,11 @@ public class MilvusConstants {
         public static final String ID = "id";
         public static final String ID_DESC = "主键id";
 
+
+        public static final Integer ID_MAX_LENGTH = 36;
+
+
+
         /**
          * 试题id
          */
@@ -118,6 +123,12 @@ public class MilvusConstants {
         public static final String METADATA = "metadata";
         public static final String METADATA_DESC = "其他数据";
         public static final Integer METADATA_MAX_LENGTH = 5120;
+
+        public static final String QUESTION_COURSEID = "courseId";
+        public static final String QUESTION_COURSEID_DESC = "试题课程ID";
+
+        public static final String QUESTION_TYPEID = "试题题型ID";
+        public static final String QUESTION_TYPEID_DESC = "试题题型ID";
     }
 
 

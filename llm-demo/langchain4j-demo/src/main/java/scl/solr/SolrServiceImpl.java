@@ -94,6 +94,8 @@ public class SolrServiceImpl implements SolrService {
                 String answer = result.getFieldValue("answer").toString();
                 String explanation = result.getFieldValue("explanation").toString();
                 Integer courseId = (Integer) result.getFieldValue("courseId");
+                String typeId = result.getFieldValue("typeId").toString();
+
                 PublishedQuestion temp = new PublishedQuestion();
                 temp.setId(id);
                 temp.setStem(stem);
@@ -101,6 +103,7 @@ public class SolrServiceImpl implements SolrService {
                 temp.setExplanation(explanation);
                 temp.setCourseId(courseId);
                 temp.setTextStem(textStem);
+                temp.setTypeId(typeId);
                 questions.add(temp);
                 // logger.info("查询试题信息：{}",JSON.toJSONString(temp));
             }

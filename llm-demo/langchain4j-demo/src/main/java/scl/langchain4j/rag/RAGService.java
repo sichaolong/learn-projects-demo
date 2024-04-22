@@ -24,6 +24,7 @@ import java.util.regex.Matcher;
 
 import static java.util.stream.Collectors.joining;
 import static scl.langchain4j.constants.LLMConstants.PROMPT_TEMPLATE;
+import static scl.langchain4j.constants.LLMConstants.PROMPT_TEMPLATE_RAG;
 
 /**
  * @author sichaolong
@@ -45,7 +46,6 @@ public class RAGService {
     EmbeddingModel embeddingModel;
 
 
-
     /**
      * 对文档切块并向量化
      *
@@ -64,25 +64,30 @@ public class RAGService {
      * Retrieve documents and create prompt
      *
      * @param queryCondition Query condition
-     * @param question     User's question
+     * @param question       User's question
+     * @param recallMaxResults recall max count from knowledge base db
+     * @param recallMinScore   recall min score from knowledge base db
      * @return Document in the vector db
      */
-    public Prompt retrieveAndCreatePrompt(Map<String, String> queryCondition, String question) {
+    public Prompt retrieveAndCreatePrompt(Map<String, String> queryCondition, String question, Integer recallMaxResults, Double recallMinScore) {
         // Embed the question
         Embedding questionEmbedding = embeddingModel.embed(question).content();
 
         // Find relevant embeddings in embedding store by semantic similarity
         // You can play with parameters below to find a sweet spot for your specific use case
-        int maxResults = 3;
-        double minScore = 0.6;
-        List<EmbeddingMatch<TextSegment>> relevantEmbeddings = milvusEmbeddingStore.findRelevant(questionEmbedding, maxResults, minScore);
+        if (recallMaxResults == null) {
+            recallMaxResults = 3;
+        }
+        if (recallMinScore == null) {
+            recallMinScore = 0.6;
+        }
+        List<EmbeddingMatch<TextSegment>> relevantEmbeddings = milvusEmbeddingStore.findRelevant(questionEmbedding, recallMaxResults, recallMinScore);
 
         for (EmbeddingMatch<TextSegment> relevantEmbedding : relevantEmbeddings) {
-
+            log.info("--------------------------- recall data item -----------------------------\n");
             log.info("Relevant embedding: {}", relevantEmbedding.embedded().text());
             log.info("Score: {}", relevantEmbedding.score());
             log.info("embeddingId: {}", relevantEmbedding.embeddingId());
-
         }
 
         // TODO filter by condition
@@ -94,33 +99,54 @@ public class RAGService {
         if (StringUtils.isBlank(information)) {
             return null;
         }
-        return PROMPT_TEMPLATE.apply(Map.of("question", question, "information", Matcher.quoteReplacement(information)));
+        return PROMPT_TEMPLATE_RAG.apply(Map.of("question", question, "information", Matcher.quoteReplacement(information)));
     }
-
 
 
     /**
-     * 召回并提问
+     * 召回并向LLM提问
      *
-     * @param queryCondition query condition
-     * @param question     user's question
-     * @param modelName    LLM model name
+     * @param queryCondition   query condition
+     * @param question         user's question
+     * @param modelName        LLM model name
+     * @param recallMaxResults recall max count from knowledge base db
+     * @param recallMinScore   recall min score from knowledge base db
      * @return
      */
-    public Pair<String, Response<AiMessage>> retrieveAndAsk(Map<String, String> queryCondition, String question, String modelName) {
-
-        Prompt prompt = retrieveAndCreatePrompt(queryCondition, question);
+    public Pair<String, Response<AiMessage>> retrieveAndAsk(Map<String, String> queryCondition, String question, String modelName, Integer recallMaxResults, Double recallMinScore) {
+        long startTime = System.currentTimeMillis();
+        // recall
+        Prompt prompt = retrieveAndCreatePrompt(queryCondition, question, recallMaxResults, recallMinScore);
         if (null == prompt) {
             return null;
         }
+        long endTime = System.currentTimeMillis();
+        log.info("recall 耗时 ：{} 毫秒",endTime - startTime);
+
+        startTime = System.currentTimeMillis();
         Response<AiMessage> response = new LLMContext(modelName).getLLMService().chat(prompt.toUserMessage());
+        endTime = System.currentTimeMillis();
+        log.info("llm answer 耗时 ：{} 毫秒",endTime - startTime);
+
         return new ImmutablePair<>(prompt.text(), response);
     }
 
-    public static final String parsePromptTemplate(String question, String information) {
-        return PROMPT_TEMPLATE.apply(Map.of("question", question, "information", Matcher.quoteReplacement(information))).text();
-    }
 
+    /**
+     * 直接向LLM提问
+     * @param question
+     * @param modelName
+     * @return
+     */
+
+    public Pair<String, Response<AiMessage>> ask(String question, String modelName) {
+        long startTime = System.currentTimeMillis();
+        Prompt prompt = PROMPT_TEMPLATE.apply(Map.of("question", question));
+        Response<AiMessage> response = new LLMContext(modelName).getLLMService().chat(prompt.toUserMessage());
+        long endTime = System.currentTimeMillis();
+        log.info("llm answer 耗时 ：{} 毫秒",endTime - startTime);
+        return new ImmutablePair<>(prompt.text(), response);
+    }
 
 
 

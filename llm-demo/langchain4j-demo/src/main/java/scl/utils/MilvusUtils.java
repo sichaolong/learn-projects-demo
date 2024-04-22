@@ -1,5 +1,6 @@
 package scl.utils;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import dev.langchain4j.data.document.Metadata;
 import dev.langchain4j.data.embedding.Embedding;
@@ -123,7 +124,9 @@ public class MilvusUtils {
             return null;
         }
         JSONObject metadata = (JSONObject) rowRecord.get(MilvusConstants.Field.METADATA);
-        return TextSegment.from(toMetadata(metadata).get(MilvusConstants.Field.QUESTION_CONTENT),toMetadata(metadata));
+        log.info("recall rowRecord fieldValues: {}", rowRecord.getFieldValues());
+        String content = (String) rowRecord.getFieldValues().get(MilvusConstants.Field.QUESTION_CONTENT);
+        return TextSegment.from(content,toMetadata(metadata));
     }
 
     private static Metadata toMetadata(JSONObject metadata) {
@@ -190,7 +193,7 @@ public class MilvusUtils {
             .withConsistencyLevel(consistencyLevel)
             .withOutFields(Arrays.asList(MilvusConstants.Field.ID,
                 MilvusConstants.Field.EIGENVALUES,
-                MilvusConstants.Field.METADATA))
+                MilvusConstants.Field.METADATA,MilvusConstants.Field.QUESTION_CONTENT))
             .build();
     }
 
@@ -208,7 +211,7 @@ public class MilvusUtils {
 
         if (CollectionUtils.isNotEmpty(ids)) {
             String idsCondition = ids.stream()
-                .map(id -> format("%s == %s", MilvusConstants.Field.ID, id))
+                .map(id -> format("%s == '%s'", MilvusConstants.Field.ID, id))
                 .collect(joining(" || "));
             sb.append(String.format("(%s)", idsCondition));
         }

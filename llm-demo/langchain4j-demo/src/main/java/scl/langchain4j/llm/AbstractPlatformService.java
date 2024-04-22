@@ -1,15 +1,15 @@
 package scl.langchain4j.llm;
 
-import com.alibaba.fastjson.JSON;
 import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.data.message.ChatMessage;
 import dev.langchain4j.model.chat.ChatLanguageModel;
 import dev.langchain4j.model.chat.StreamingChatLanguageModel;
 import dev.langchain4j.model.output.Response;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.beanutils.BeanUtils;
 import scl.langchain4j.assistant.Assistant;
 import scl.langchain4j.assistant.AssistantWithoutMemory;
-import scl.langchain4j.constants.LLMConstants;
+import scl.langchain4j.config.LLMConfig;
 import scl.langchain4j.store.CustomChatMemoryStore;
 
 import java.net.Proxy;
@@ -19,7 +19,7 @@ import java.net.Proxy;
  * @createdate 2024/4/19 14:10
  */
 @Slf4j
-public abstract class AbstractLLMService<T>{
+public abstract class AbstractPlatformService<T>{
 
     protected Proxy proxy;
 
@@ -36,13 +36,13 @@ public abstract class AbstractLLMService<T>{
 
     private CustomChatMemoryStore chatMemoryStoreService;
 
-    public AbstractLLMService(String modelName, String settingName, Class<T> clazz) {
+    public AbstractPlatformService(String modelName, String platformKey, Class<T> clazz) {
         this.modelName = modelName;
-        String st = LLMConstants.CONFIGS.get(settingName);
-        platform = JSON.parseObject(st, clazz);
+        this.platform =  (T)LLMConfig.PLATFORM_CONFIGS.get(platformKey);
+
     }
 
-    public AbstractLLMService setProxy(Proxy proxy) {
+    public AbstractPlatformService setProxy(Proxy proxy) {
         this.proxy = proxy;
         return this;
     }

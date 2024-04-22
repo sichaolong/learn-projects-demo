@@ -44,27 +44,31 @@ public class MilvusServiceTest {
     MilvusService milvusService;
 
 
-    /**
-     * 1、测试创建集合
-     */
-    @Test
-    public void testCreateCollection() {
-
+    private List<FieldType> buildFieldTypeList() {
         List<FieldType> fieldTypeList = new ArrayList<>();
-
         FieldType id = FieldType.newBuilder()
             .withName(MilvusConstants.Field.ID)
             .withDescription(MilvusConstants.Field.ID_DESC)
-            .withDataType(DataType.Int64)
+            .withDataType(DataType.VarChar)
+            .withMaxLength(MilvusConstants.Field.METADATA_MAX_LENGTH)
             .withPrimaryKey(true)
-            .withAutoID(true)
+            .build();
+
+
+        FieldType content = FieldType.newBuilder()
+            .withName(MilvusConstants.Field.QUESTION_CONTENT)
+            .withDescription(MilvusConstants.Field.QUESTION_CONTENT_DESC)
+            .withDataType(DataType.VarChar)
+            .withMaxLength(MilvusConstants.Field.QUESTION_CONTENT_MAX_LENGTH)
             .build();
 
         FieldType metadata = FieldType.newBuilder()
             .withName(MilvusConstants.Field.METADATA)
             .withDescription(MilvusConstants.Field.METADATA_DESC)
             .withDataType(DataType.JSON)
+            .withMaxLength(MilvusConstants.Field.METADATA_MAX_LENGTH)
             .build();
+
         FieldType eigenvalues = FieldType.newBuilder()
             .withName(MilvusConstants.Field.EIGENVALUES)
             .withDescription(MilvusConstants.Field.EIGENVALUES_DESC)
@@ -73,9 +77,20 @@ public class MilvusServiceTest {
             .build();
 
         fieldTypeList.add(id);
+        fieldTypeList.add(content);
         fieldTypeList.add(metadata);
         fieldTypeList.add(eigenvalues);
+        return fieldTypeList;
 
+    }
+
+    /**
+     * 1、测试创建集合
+     */
+    @Test
+    public void testCreateCollection() {
+
+        List<FieldType> fieldTypeList = buildFieldTypeList();
         boolean success = milvusService.creatCollection(MilvusConstants.DATABASE_NAME,
             MilvusConstants.COLLECTION_NAME_QUESTIONS_ENGLISH_GZ,
             MilvusConstants.COLLECTION_NAME_QUESTIONS_ENGLISH_GZ_DESC,
