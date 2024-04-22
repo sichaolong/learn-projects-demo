@@ -8,8 +8,8 @@ import dev.langchain4j.store.memory.chat.InMemoryChatMemoryStore;
 import io.github.cdimascio.dotenv.Dotenv;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import scl.langchain4j.aiservice.Assistant;
-import scl.langchain4j.aiservice.AssistantTools;
+import scl.langchain4j.assistant.Assistant;
+import scl.langchain4j.assistant.AssistantTools;
 
 /**
  * @author sichaolong
@@ -73,7 +73,7 @@ public class QianfanDemo {
 
 
         String question = "你好";
-        String response = assistant.chat("user1", question);
+        String response = assistant.chatSimple("user1", question);
         System.out.println(response);
 
     }

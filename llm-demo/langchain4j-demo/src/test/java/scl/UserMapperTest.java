@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import scl.mapper.UserMapper;
-import scl.milvus.MilvusService;
 
 /**
  * @author sichaolong
