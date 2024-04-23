@@ -17,7 +17,7 @@ public class AzurePlatformInfo extends PlatformInfo {
 
     private String apiVersion;
 
-    private String baseUrl;
+    private String endpoint;
 
 
 }

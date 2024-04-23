@@ -41,13 +41,50 @@ public class KnowledgeBaseServiceTest {
      * 测试 文档切分并且保存到Milvus本地知识库
      */
     @Test
-    public void testIngestDocumentAndStoreKnowledgeBase() {
+    public void testEmbeddingAndStore() {
         KnowledgeBaseItem item = new KnowledgeBaseItem();
         item.setQid("9999999999999");
         item.setStem("你是谁？");
         item.setAnswer("你是我，我是他，你是他，那我是谁？");
         item.setExplanation("66666");
         knowledgeBaseService.embeddingAndStore(item);
+    }
+
+
+    /**
+     * 根据qid将solr试题构建到本地知识库
+     * @throws InterruptedException
+     */
+    @Test
+    public void testBuildKnowledgeBaseByQids() {
+
+        List<String> qids = new ArrayList<>();
+        // qids.add("1922726081847296");
+        // qids.add("2466657146732545");
+
+        List<KnowledgeBaseItem> knowledgeBaseItems = getKnowledgeBaseItemByQids(qids);
+        log.info("从solr查询的试题数据量：{}", knowledgeBaseItems.size());
+        log.info("数据示例：{}", JSON.toJSONString(knowledgeBaseItems));
+        knowledgeBaseService.embeddingAndStore(knowledgeBaseItems);
+    }
+
+    private List<KnowledgeBaseItem> getKnowledgeBaseItemByQids(List<String> qids) {
+        QuestionSearchParams solrSearchParams = new QuestionSearchParams();
+        solrSearchParams.setQuestionIds(qids);
+        Pagination<PublishedQuestion> pageData = solrService.getPublishedQuestionsWithPagination(solrSearchParams);
+        List<PublishedQuestion> publishedQuestionList = pageData.getItems();
+        List<KnowledgeBaseItem> itemList = new ArrayList<>();
+        for (PublishedQuestion publishedQuestion : publishedQuestionList) {
+            KnowledgeBaseItem item = new KnowledgeBaseItem();
+            item.setQid(publishedQuestion.getId());
+            item.setStem(QmlTextParser.parseText(publishedQuestion.getStem()));
+            item.setAnswer(QmlTextParser.parseText(publishedQuestion.getAnswer()));
+            item.setExplanation(QmlTextParser.parseText(publishedQuestion.getExplanation()));
+            item.setCourseId(publishedQuestion.getCourseId());
+            item.setTypeId(publishedQuestion.getTypeId());
+            itemList.add(item);
+        }
+        return itemList;
     }
 
 
@@ -62,20 +99,30 @@ public class KnowledgeBaseServiceTest {
         // 单选题
         String questionTypeId = "2803";
 
+        // solr 高中英语单选总数量 198432
         Integer rows = 1000;
-        Integer page = 1;
-        List<KnowledgeBaseItem> knowledgeBaseItems = getKnowledgeBaseItems(courseId, questionTypeId,rows,page);
-        log.info("从solr查询的试题数据量：{}", knowledgeBaseItems.size());
-        log.info("第一条数据示例：{}", JSON.toJSONString(knowledgeBaseItems.get(0)));
+        Integer page = 2;
 
-        List<List<KnowledgeBaseItem>> partition = ListUtils.partition(knowledgeBaseItems, 100);
-        for (int i = 0; i < partition.size(); i++) {
-            log.info("当前 embedding 批次：{}", i + 1);
-            knowledgeBaseService.embeddingAndStore(partition.get(i));
-            log.info("当前 embedding ：{} 批次结束，休息5s", i + 1);
+        for (int j = 2; j <= 12; j++) {
+            page = j;
+
+            log.info("分页查询solr数据，current page ：{},rows:{}",page,rows);
+            List<KnowledgeBaseItem> knowledgeBaseItems = getKnowledgeBaseItems(courseId, questionTypeId,rows,page);
+            log.info("从solr查询的试题数据量：{}", knowledgeBaseItems.size());
+            log.info("第一条数据示例：{}", JSON.toJSONString(knowledgeBaseItems.get(0)));
+
+            List<List<KnowledgeBaseItem>> partition = ListUtils.partition(knowledgeBaseItems, 100);
+            for (int i = 0; i < partition.size(); i++) {
+                log.info("当前 embedding 批次：{}", i + 1);
+                knowledgeBaseService.embeddingAndStore(partition.get(i));
+                log.info("当前 embedding ：{} 批次结束，休息2s", i + 1);
+                Thread.sleep(2000);
+            }
+
+            log.info("当前 从solr查询 ：{} 批次结束，休息5s", j);
             Thread.sleep(5000);
-
         }
+
 
     }
 
@@ -91,7 +138,7 @@ public class KnowledgeBaseServiceTest {
         for (PublishedQuestion publishedQuestion : publishedQuestionList) {
             KnowledgeBaseItem item = new KnowledgeBaseItem();
             item.setQid(publishedQuestion.getId());
-            item.setStem(QmlTextParser.parseText(publishedQuestion.getTextStem()));
+            item.setStem(QmlTextParser.parseText(publishedQuestion.getStem()));
             item.setAnswer(QmlTextParser.parseText(publishedQuestion.getAnswer()));
             item.setExplanation(QmlTextParser.parseText(publishedQuestion.getExplanation()));
             item.setCourseId(publishedQuestion.getCourseId());

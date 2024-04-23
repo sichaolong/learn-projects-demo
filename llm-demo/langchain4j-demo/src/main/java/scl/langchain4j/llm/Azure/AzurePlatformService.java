@@ -1,11 +1,12 @@
 package scl.langchain4j.llm.Azure;
 
+import com.azure.ai.openai.OpenAIClient;
+import com.azure.ai.openai.OpenAIClientBuilder;
 import dev.langchain4j.model.azure.AzureOpenAiChatModel;
 import dev.langchain4j.model.azure.AzureOpenAiStreamingChatModel;
 import dev.langchain4j.model.chat.ChatLanguageModel;
 import dev.langchain4j.model.chat.StreamingChatLanguageModel;
-import dev.langchain4j.model.qianfan.QianfanChatModel;
-import dev.langchain4j.model.qianfan.QianfanStreamingChatModel;
+import dev.langchain4j.model.openai.OpenAiTokenizer;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 import scl.langchain4j.config.LLMConfig;
@@ -19,8 +20,11 @@ import scl.langchain4j.llm.AbstractPlatformService;
 @Slf4j
 @Accessors(chain = true)
 public class AzurePlatformService extends AbstractPlatformService<AzurePlatformInfo> {
-    public AzurePlatformService(String modelName) {
-        super(modelName, LLMConstants.PlatformKey.AZURE, AzurePlatformInfo.class);
+
+    private String deploymentName;
+    public AzurePlatformService(String deploymentName) {
+        super(deploymentName, LLMConstants.PlatformKey.AZURE, AzurePlatformInfo.class);
+        this.deploymentName = deploymentName;
     }
 
     @Override
@@ -33,10 +37,13 @@ public class AzurePlatformService extends AbstractPlatformService<AzurePlatformI
 
         AzurePlatformInfo platform = (AzurePlatformInfo) LLMConfig.PLATFORM_CONFIGS.get(LLMConstants.PlatformKey.AZURE);
 
+
         return AzureOpenAiChatModel.builder()
+            .endpoint(platform.getEndpoint())
             .apiKey(platform.getAzureApiKey())
-            .deploymentName(platform.getDeploymentName())
+            .deploymentName(deploymentName)
             .serviceVersion(platform.getApiVersion())
+            .tokenizer(new OpenAiTokenizer(platform.getApiVersion()))
             .temperature(0.1)
             .topP(1.0)
             .maxRetries(1)

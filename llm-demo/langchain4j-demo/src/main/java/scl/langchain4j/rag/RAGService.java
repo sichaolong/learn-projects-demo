@@ -18,13 +18,14 @@ import org.springframework.stereotype.Service;
 import scl.langchain4j.store.CustomMilvusEmbeddingStore;
 import scl.langchain4j.llm.LLMContext;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 
 import static java.util.stream.Collectors.joining;
-import static scl.langchain4j.constants.LLMConstants.PROMPT_TEMPLATE;
-import static scl.langchain4j.constants.LLMConstants.PROMPT_TEMPLATE_RAG;
+import static scl.langchain4j.constants.LLMConstants.*;
+
 
 /**
  * @author sichaolong
@@ -99,7 +100,7 @@ public class RAGService {
         if (StringUtils.isBlank(information)) {
             return null;
         }
-        return PROMPT_TEMPLATE_RAG.apply(Map.of("question", question, "information", Matcher.quoteReplacement(information)));
+        return PROMPT_USER_RAG_TEMPLATE.apply(Map.of("question", question, "information", Matcher.quoteReplacement(information)));
     }
 
 
@@ -114,6 +115,8 @@ public class RAGService {
      * @return
      */
     public Pair<String, Response<AiMessage>> retrieveAndAsk(Map<String, String> queryCondition, String question, String modelName, Integer recallMaxResults, Double recallMinScore) {
+        Prompt systemPrompt = createSystemPrompt();
+
         long startTime = System.currentTimeMillis();
         // recall
         Prompt prompt = retrieveAndCreatePrompt(queryCondition, question, recallMaxResults, recallMinScore);
@@ -124,11 +127,22 @@ public class RAGService {
         log.info("recall 耗时 ：{} 毫秒",endTime - startTime);
 
         startTime = System.currentTimeMillis();
-        Response<AiMessage> response = new LLMContext(modelName).getLLMService().chat(prompt.toUserMessage());
+        Response<AiMessage> response = new LLMContext(modelName).getLLMService().chat(Arrays.asList(systemPrompt.toSystemMessage(), prompt.toUserMessage()));
         endTime = System.currentTimeMillis();
+        log.info("ask llm messages：{}",Arrays.asList(systemPrompt.toSystemMessage(), prompt.toUserMessage()));
         log.info("llm answer 耗时 ：{} 毫秒",endTime - startTime);
 
+
         return new ImmutablePair<>(prompt.text(), response);
+    }
+
+
+    /**
+     * 创建系统提示词
+     * @return
+     */
+    private Prompt createSystemPrompt() {
+        return Prompt.from(PROMPT_SYSTEM_TEMPLATE.template());
     }
 
 
@@ -140,10 +154,12 @@ public class RAGService {
      */
 
     public Pair<String, Response<AiMessage>> ask(String question, String modelName) {
+        Prompt systemPrompt = createSystemPrompt();
         long startTime = System.currentTimeMillis();
-        Prompt prompt = PROMPT_TEMPLATE.apply(Map.of("question", question));
-        Response<AiMessage> response = new LLMContext(modelName).getLLMService().chat(prompt.toUserMessage());
+        Prompt prompt = PROMPT_USER_TEMPLATE.apply(Map.of("question", question));
+        Response<AiMessage> response = new LLMContext(modelName).getLLMService().chat(Arrays.asList(systemPrompt.toSystemMessage(),prompt.toUserMessage()));
         long endTime = System.currentTimeMillis();
+        log.info("ask llm messages :{}",Arrays.asList(systemPrompt.toSystemMessage(),prompt.toUserMessage()));
         log.info("llm answer 耗时 ：{} 毫秒",endTime - startTime);
         return new ImmutablePair<>(prompt.text(), response);
     }

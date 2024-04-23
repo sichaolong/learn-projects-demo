@@ -55,18 +55,25 @@ public class LLMConfig implements InitializingBean {
     /**
      * 微软Azure
      */
+    @Value("${llms.azure.azureEndpoint:https://xkwopenai.openai.azure.com/}")
+    private String azureEndpoint;
 
     @Value("${llms.azure.apiKey:8d728a3da84146a7a55396a7e8abb3ea}")
     private String azureApiKey;
 
-    @Value("${llms.azure.apiKey:}")
-    private String azureSecretKey;
+    @Value("${llms.azure.deploymentName:base4}")
+    private String azureDeploymentName;
 
-    @Value("${llms.azure.models:base4}")
+    @Value("${llms.azure.apiVersion:2023-09-01-PREVIEW}")
+    private String apiVersion;
+
+    @Value("${llms.azure.models:base4,base,base4_32k}")
     private String azureModels;
 
 
-
+    /**
+     * 各平台配置Map
+     */
 
     public static Map<String, Object> PLATFORM_CONFIGS = new HashMap<>();
 
@@ -79,7 +86,6 @@ public class LLMConfig implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() {
-
         Proxy proxy = null;
         if (proxyEnable) {
             proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost, proxyHttpPort));
@@ -111,7 +117,6 @@ public class LLMConfig implements InitializingBean {
             log.warn("qianfan platform service is disabled");
         }
         log.info("qianfan avilable model:{}", qianfanModels);
-
         for (String model : qianfanModels) {
             LLMContext.addLLMService(model, new QianfanPlatformService(model).setProxy(proxy));
         }
@@ -127,7 +132,9 @@ public class LLMConfig implements InitializingBean {
 
         AzurePlatformInfo platform = new AzurePlatformInfo();
         platform.setAzureApiKey(azureApiKey);
-        // TODO 设置参数
+        platform.setApiVersion(apiVersion);
+        platform.setDeploymentName(azureDeploymentName);
+        platform.setEndpoint(azureEndpoint);
         String[] models = StringUtils.split(azureModels, ",");
         platform.setModels(models);
         PLATFORM_CONFIGS.put(LLMConstants.PlatformKey.AZURE, platform);
@@ -138,8 +145,8 @@ public class LLMConfig implements InitializingBean {
         }
         log.info("azure avilable model:{}", qianfanModels);
 
-        for (String model : azureModels) {
-            LLMContext.addLLMService(model, new AzurePlatformService(model).setProxy(proxy));
+        for (String deploymentName : azureModels) {
+            LLMContext.addLLMService(deploymentName, new AzurePlatformService(deploymentName).setProxy(proxy));
         }
     }
 

@@ -48,7 +48,7 @@ public class LLMContext {
     }
 
     public static String[] getSupportModels(String platformKey) {
-        PlatformInfo platformInfo = (PlatformInfo) LLMConfig.CONFIGS.get(platformKey);
+        PlatformInfo platformInfo = (PlatformInfo) LLMConfig.PLATFORM_CONFIGS.get(platformKey);
         return platformInfo.getModels();
     }
 }

@@ -46,7 +46,19 @@ public class RAGServiceTest {
             "B.although … and\n" +
             "C.when … where\n" +
             "D.even if … unless";
-        Pair<String, Response<AiMessage>> responsePair = ragService.ask(question, LLMConstants.ModelKey.QIANFAN_ERNIE_3_5_8K);
+
+        question = "Children, __often fascinated by nature and animals, can learn valuable lessons __ spending time outdoors.、\n"
+            + "A.unless … but\n"
+            + "B.although … and\n"
+            + "C.when … where\n"
+            + "D.even if … unless";
+
+        question = "Man may disappear________ other creatures who became too specialized to survive their environment.\n" +
+            "A.as\n" +
+            "B.just as\n" +
+            "C.as if\n" +
+            "D.as have";
+        Pair<String, Response<AiMessage>> responsePair = ragService.ask(question, LLMConstants.ModelKey.AZURE_BASE_4);
 
         Response<AiMessage> ar = responsePair.getRight();
         String questionText = responsePair.getLeft();
@@ -68,7 +80,31 @@ public class RAGServiceTest {
         String question = "给出下列答案的正确选项：\n" +
             "Where shall we go for the holiday, to the park or to the school? –_ I don’t really mind. Forget it! Why not? What’s the point? It’s up to you! A.Forget it !\n" +
             "A.Forget it ! B.Why not ? C.What’ s the point ? D.It’ s up to you!";
-        Pair<String, Response<AiMessage>> responsePair = ragService.retrieveAndAsk(null, question, LLMConstants.ModelKey.QIANFAN_ERNIE_3_5_8K, 3, 0.6d);
+
+        question = "Adults, __overly concerned with fame and fortune, sometimes fail to see the joy in simple things __ children do not.、\n" +
+            "A.unless … but\n" +
+            "B.although … and\n" +
+            "C.when … where\n" +
+            "D.even if … unless";
+
+        question = "Children, __often fascinated by nature and animals, can learn valuable lessons __ spending time outdoors.、\n"
+            + "A.unless … but\n"
+            + "B.although … and\n"
+            + "C.when … where\n"
+            + "D.even if … unless";
+
+        question = "Man may disappear________ other creatures who became too specialized to survive their environment.\n" +
+            "A.as\n" +
+            "B.just as\n" +
+            "C.as if\n" +
+            "D.as have";
+
+        question = "Some species may become extinct ________ other species that have adapted to their environment.\n" +
+            "A.as\n" +
+            "B.just as\n" +
+            "C.as if\n" +
+            "D.as have";
+        Pair<String, Response<AiMessage>> responsePair = ragService.retrieveAndAsk(null, question, LLMConstants.ModelKey.QIANFAN_ERNIE_4_0_8K, 3, 0.6d);
 
         String questionText = responsePair.getLeft();
         Response<AiMessage> ar = responsePair.getRight();

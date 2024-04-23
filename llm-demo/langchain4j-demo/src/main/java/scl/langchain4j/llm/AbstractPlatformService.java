@@ -13,6 +13,7 @@ import scl.langchain4j.config.LLMConfig;
 import scl.langchain4j.store.CustomChatMemoryStore;
 
 import java.net.Proxy;
+import java.util.List;
 
 /**
  * @author sichaolong
@@ -83,5 +84,15 @@ public abstract class AbstractPlatformService<T>{
         }
         return getChatLLM().generate(chatMessage);
     }
+
+    public Response<AiMessage> chat(List<ChatMessage> chatMessageList) {
+        if (!isEnabled()) {
+            log.error("llm service is disabled");
+            throw new RuntimeException("llm service is disabled");
+        }
+        return getChatLLM().generate(chatMessageList);
+    }
+
+
 
 }
