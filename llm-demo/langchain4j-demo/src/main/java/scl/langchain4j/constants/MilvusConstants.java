@@ -17,14 +17,6 @@ public class MilvusConstants {
 
 
     /**
-     * 集合名称
-     */
-
-    public static final String COLLECTION_NAME_QUESTIONS_ENGLISH_GZ = "llm_rag_questions_28_2803";
-    public static final String COLLECTION_NAME_QUESTIONS_ENGLISH_GZ_DESC = "用于大模型RAG增强检索链的试题平台已经生产（有答案、解析）的试题集合（高中英语）";
-
-
-    /**
      * IVF_FLAT
      */
     public static final IndexType IVF_FLAT_INDEX_TYPE = IndexType.IVF_FLAT;
@@ -54,7 +46,7 @@ public class MilvusConstants {
      * 距离度量COSINE（余轩相似度）
      */
 
-    public static final MetricType METRIC_TYPE_ENGLISH_GZ = MetricType.COSINE;
+    public static final MetricType METRIC_TYPE_COSINE = MetricType.COSINE;
 
 
     /**
@@ -96,7 +88,6 @@ public class MilvusConstants {
         public static final Integer ID_MAX_LENGTH = 36;
 
 
-
         /**
          * 试题id
          */
@@ -129,6 +120,33 @@ public class MilvusConstants {
 
         public static final String QUESTION_TYPEID = "试题题型ID";
         public static final String QUESTION_TYPEID_DESC = "试题题型ID";
+    }
+
+
+    public static class Collection {
+
+
+        /**
+         * 知识库collection前缀
+         */
+        public static final String COLLECTION_NAME_QUESTIONS_PREFIX = "llm_rag_questions_";
+
+        /**
+         * 知识库collection的划分key
+         */
+        public static final String COLLECTION_COURSEID_KEY = "courseId";
+        public static final String COLLECTI_TYPEID_KEY = "typeId";
+
+
+        public static final String COLLECTION_NAME_QUESTIONS_ENGLISH_28_23 = COLLECTION_NAME_QUESTIONS_PREFIX + "28_2803";
+        public static final String COLLECTION_NAME_QUESTIONS_ENGLISH_28_23_DESC = "用于大模型RAG增强检索链的试题平台已经生产（有答案、解析）的试题集合（高中英语单选）";
+
+
+        public static final String COLLECTION_NAME_QUESTIONS_ENGLISH_3_2807 = COLLECTION_NAME_QUESTIONS_PREFIX + "3_2807";
+
+        public static final String COLLECTION_NAME_QUESTIONS_ENGLISH_3_2807_DESC = "用于大模型RAG增强检索链的试题平台已经生产（有答案、解析）的试题集合（小学英语翻译）";
+
+
     }
 
 

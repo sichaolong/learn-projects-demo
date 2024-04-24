@@ -97,12 +97,12 @@ public class CustomMilvusEmbeddingStore implements EmbeddingStore<TextSegment>, 
         log.info("本地向量库是否存在:{}", exist);
         if (!exist) {
             List<FieldType> fieldTypeList = buildFieldTypeList();
-            boolean success = milvusService.creatCollection(databaseName, collectionName, MilvusConstants.COLLECTION_NAME_QUESTIONS_ENGLISH_GZ_DESC, fieldTypeList);
+            boolean success = milvusService.creatCollection(databaseName, collectionName, MilvusConstants.Collection.COLLECTION_NAME_QUESTIONS_ENGLISH_28_23, fieldTypeList);
             if (success) {
                 milvusService.createIndex(collectionName,
                     MilvusConstants.Field.EIGENVALUES,
                     MilvusConstants.IVF_FLAT_INDEX_TYPE,
-                    MilvusConstants.METRIC_TYPE_ENGLISH_GZ,
+                    MilvusConstants.METRIC_TYPE_COSINE,
                     MilvusConstants.IVF_INDEX_EXTRA_PARAM_ENGLISH_GZ);
             }
         }

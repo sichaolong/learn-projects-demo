@@ -8,9 +8,12 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import scl.langchain4j.config.LLMConfig;
 import scl.langchain4j.constants.LLMConstants;
+import scl.langchain4j.constants.MilvusConstants;
 import scl.langchain4j.rag.RAGService;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author sichaolong
@@ -67,7 +70,8 @@ public class RAGServiceTest {
         int outputTokenCount = ar.tokenUsage().outputTokenCount();
 
         log.info("question text:{}",questionText);
-        log.info("ai response message:{}",ar.content());
+        log.info("ai response message text:{}",ar.content().text());
+
         log.info("input token:{}",inputTokenCount);
         log.info("output token:{}",outputTokenCount);
     }
@@ -112,7 +116,7 @@ public class RAGServiceTest {
         int outputTokenCount = ar.tokenUsage().outputTokenCount();
 
         log.info("question text:{}",questionText);
-        log.info("ai response message:{}",ar.content());
+        log.info("ai response message text:{}",ar.content().text());
         log.info("input token:{}",inputTokenCount);
         log.info("output token:{}",outputTokenCount);
 

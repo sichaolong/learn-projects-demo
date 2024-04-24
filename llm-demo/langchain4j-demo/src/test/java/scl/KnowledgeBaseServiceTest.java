@@ -14,9 +14,7 @@ import scl.pojo.QuestionSearchParams;
 import scl.solr.SolrService;
 import scl.utils.QmlTextParser;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 
 /**
@@ -57,7 +55,6 @@ public class KnowledgeBaseServiceTest {
      */
     @Test
     public void testBuildKnowledgeBaseByQids() {
-
         List<String> qids = new ArrayList<>();
         // qids.add("1922726081847296");
         // qids.add("2466657146732545");

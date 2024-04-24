@@ -2,12 +2,9 @@ package scl.langchain4j.config;
 
 import dev.langchain4j.data.document.DocumentSplitter;
 import dev.langchain4j.data.document.splitter.DocumentSplitters;
-import dev.langchain4j.data.embedding.Embedding;
 import dev.langchain4j.model.embedding.AllMiniLmL6V2EmbeddingModel;
 import dev.langchain4j.model.embedding.EmbeddingModel;
-import dev.langchain4j.model.embedding.OnnxEmbeddingModel;
 import dev.langchain4j.model.openai.OpenAiTokenizer;
-import dev.langchain4j.model.output.Response;
 import dev.langchain4j.store.embedding.EmbeddingStoreIngestor;
 import io.milvus.client.MilvusServiceClient;
 import io.milvus.common.clientenum.ConsistencyLevelEnum;
@@ -94,8 +91,8 @@ public class MilvusConfig {
     public CustomMilvusEmbeddingStore milvusEmbeddingStore() {
         CustomMilvusEmbeddingStore embeddingStore = new CustomMilvusEmbeddingStore(
             MilvusConstants.DATABASE_NAME,
-            MilvusConstants.COLLECTION_NAME_QUESTIONS_ENGLISH_GZ,
-            MilvusConstants.METRIC_TYPE_ENGLISH_GZ,
+            MilvusConstants.Collection.COLLECTION_NAME_QUESTIONS_ENGLISH_28_23,
+            MilvusConstants.METRIC_TYPE_COSINE,
             ConsistencyLevelEnum.STRONG);
         return embeddingStore;
     }

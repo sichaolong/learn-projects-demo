@@ -92,8 +92,8 @@ public class MilvusServiceTest {
 
         List<FieldType> fieldTypeList = buildFieldTypeList();
         boolean success = milvusService.creatCollection(MilvusConstants.DATABASE_NAME,
-            MilvusConstants.COLLECTION_NAME_QUESTIONS_ENGLISH_GZ,
-            MilvusConstants.COLLECTION_NAME_QUESTIONS_ENGLISH_GZ_DESC,
+            MilvusConstants.Collection.COLLECTION_NAME_QUESTIONS_ENGLISH_28_23,
+            MilvusConstants.Collection.COLLECTION_NAME_QUESTIONS_ENGLISH_28_23_DESC,
             fieldTypeList);
         System.out.println(success);
     }
@@ -105,10 +105,10 @@ public class MilvusServiceTest {
     @Test
     public void testCreateIndex() {
         boolean success = milvusService.createIndex(
-            MilvusConstants.COLLECTION_NAME_QUESTIONS_ENGLISH_GZ,
+            MilvusConstants.Collection.COLLECTION_NAME_QUESTIONS_ENGLISH_28_23,
             MilvusConstants.Field.EIGENVALUES,
             MilvusConstants.HNSW_INDEX_TYPE,
-            MilvusConstants.METRIC_TYPE_ENGLISH_GZ,
+            MilvusConstants.METRIC_TYPE_COSINE,
             // nlist
             // ef、M
             MilvusConstants.HNSW_INDEX_EXTRA_PARAM_ENGLISH_GZ);
@@ -120,7 +120,7 @@ public class MilvusServiceTest {
      */
     @Test
     public void testLoadCollection() {
-        boolean success = milvusService.loadCollection(MilvusConstants.DATABASE_NAME, MilvusConstants.COLLECTION_NAME_QUESTIONS_ENGLISH_GZ);
+        boolean success = milvusService.loadCollection(MilvusConstants.DATABASE_NAME, MilvusConstants.Collection.COLLECTION_NAME_QUESTIONS_ENGLISH_28_23);
         System.out.println(success);
     }
 
@@ -130,7 +130,7 @@ public class MilvusServiceTest {
      */
     @Test
     public void testCreatePartition() {
-        boolean success = milvusService.createPartition(MilvusConstants.COLLECTION_NAME_QUESTIONS_ENGLISH_GZ, MilvusConstants.PARTITION_PREFIX + 1);
+        boolean success = milvusService.createPartition(MilvusConstants.Collection.COLLECTION_NAME_QUESTIONS_ENGLISH_28_23, MilvusConstants.PARTITION_PREFIX + 1);
         System.out.println(success);
     }
 
@@ -140,7 +140,7 @@ public class MilvusServiceTest {
      */
     @Test
     public void testIsExitCollection() {
-        boolean exits = milvusService.isExitCollection(MilvusConstants.DATABASE_NAME, MilvusConstants.COLLECTION_NAME_QUESTIONS_ENGLISH_GZ);
+        boolean exits = milvusService.isExitCollection(MilvusConstants.DATABASE_NAME, MilvusConstants.Collection.COLLECTION_NAME_QUESTIONS_ENGLISH_28_23);
         System.out.println(exits);
     }
 
@@ -152,7 +152,7 @@ public class MilvusServiceTest {
     public void testInsert() {
 
         String databaseName = MilvusConstants.DATABASE_NAME;
-        String collectionName = MilvusConstants.COLLECTION_NAME_QUESTIONS_ENGLISH_GZ;
+        String collectionName = MilvusConstants.Collection.COLLECTION_NAME_QUESTIONS_ENGLISH_28_23;
         // 模拟数据
         List<List<Float>> eigenValues = new ArrayList<>();
         // 128维度
@@ -183,7 +183,7 @@ public class MilvusServiceTest {
      */
     @Test
     public void testFlash() {
-        List<String> collectionNameList = Arrays.asList(MilvusConstants.COLLECTION_NAME_QUESTIONS_ENGLISH_GZ);
+        List<String> collectionNameList = Arrays.asList(MilvusConstants.Collection.COLLECTION_NAME_QUESTIONS_ENGLISH_28_23);
         boolean success = milvusService.flash(collectionNameList);
         System.out.println(success);
     }
@@ -196,7 +196,7 @@ public class MilvusServiceTest {
     @Test
     public void testSearch() {
 
-        String collectionName = MilvusConstants.COLLECTION_NAME_QUESTIONS_ENGLISH_GZ;
+        String collectionName = MilvusConstants.Collection.COLLECTION_NAME_QUESTIONS_ENGLISH_28_23;
         List<String> outFiledList = Arrays.asList(MilvusConstants.Field.METADATA, MilvusConstants.Field.EIGENVALUES, MilvusConstants.Field.ID);
 
         List<Float> vector = new ArrayList<>();
@@ -234,7 +234,7 @@ public class MilvusServiceTest {
         condition.put("content", "sichaolong");
 
         QueryResultsWrapper wrapper = milvusService.searchByCondition(
-            MilvusConstants.COLLECTION_NAME_QUESTIONS_ENGLISH_GZ,
+            MilvusConstants.Collection.COLLECTION_NAME_QUESTIONS_ENGLISH_28_23,
             ids,
             condition
         );
@@ -259,7 +259,7 @@ public class MilvusServiceTest {
      */
     @Test
     public void testReleaseCollection() {
-        boolean success = milvusService.releaseCollection(MilvusConstants.COLLECTION_NAME_QUESTIONS_ENGLISH_GZ);
+        boolean success = milvusService.releaseCollection(MilvusConstants.Collection.COLLECTION_NAME_QUESTIONS_ENGLISH_28_23);
         System.out.println(success);
     }
 
