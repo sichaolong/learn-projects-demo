@@ -8,6 +8,7 @@ import dev.langchain4j.model.embedding.EmbeddingModel;
 import dev.langchain4j.model.input.Prompt;
 import dev.langchain4j.model.output.Response;
 import dev.langchain4j.store.embedding.EmbeddingMatch;
+import dev.langchain4j.store.embedding.EmbeddingStore;
 import dev.langchain4j.store.embedding.EmbeddingStoreIngestor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -52,10 +53,18 @@ public class RAGService {
      *
      * @param document 知识库文档
      */
+    public void ingestDocument(Document document, EmbeddingStore<TextSegment> embeddingStore) {
+        embeddingStoreIngestor.ingest(document,embeddingStore);
+    }
+
     public void ingestDocument(Document document) {
         embeddingStoreIngestor.ingest(document);
     }
 
+
+    public void ingestDocuments(List<Document> documentList,EmbeddingStore<TextSegment> embeddingStore) {
+        embeddingStoreIngestor.ingest(documentList,embeddingStore);
+    }
 
     public void ingestDocuments(List<Document> documentList) {
         embeddingStoreIngestor.ingest(documentList);
