@@ -197,6 +197,10 @@ public class QmlTextParser {
         return sb.toString();
     }
 
+    public static void main(String[] args) {
+        System.out.println(replaceQmlTag("你好 <bk index=\"1\" size=\"13\" type=\"underline\"/> 122", true));
+    }
+
     /**
      * @param keepNewLineCharacter 是否保留换行符
      * @return

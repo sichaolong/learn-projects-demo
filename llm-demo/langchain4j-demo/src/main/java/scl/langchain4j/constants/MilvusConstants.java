@@ -118,7 +118,7 @@ public class MilvusConstants {
         public static final String QUESTION_COURSEID = "courseId";
         public static final String QUESTION_COURSEID_DESC = "试题课程ID";
 
-        public static final String QUESTION_TYPEID = "试题题型ID";
+        public static final String QUESTION_TYPEID = "typeId";
         public static final String QUESTION_TYPEID_DESC = "试题题型ID";
     }
 
@@ -142,7 +142,7 @@ public class MilvusConstants {
         public static final String COLLECTION_NAME_QUESTIONS_ENGLISH_28_23_DESC = "用于大模型RAG增强检索链的试题平台已经生产（有答案、解析）的试题集合（高中英语单选）";
 
 
-        public static final String COLLECTION_NAME_QUESTIONS_ENGLISH_3_2807 = COLLECTION_NAME_QUESTIONS_PREFIX + "3_2807";
+        public static final String COLLECTION_NAME_QUESTIONS_ENGLISH_3_030602 = COLLECTION_NAME_QUESTIONS_PREFIX + "3_030602";
 
         public static final String COLLECTION_NAME_QUESTIONS_ENGLISH_3_2807_DESC = "用于大模型RAG增强检索链的试题平台已经生产（有答案、解析）的试题集合（小学英语翻译）";
 

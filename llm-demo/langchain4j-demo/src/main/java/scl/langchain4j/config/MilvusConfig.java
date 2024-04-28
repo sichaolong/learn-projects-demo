@@ -5,18 +5,26 @@ import dev.langchain4j.data.document.splitter.DocumentSplitters;
 import dev.langchain4j.model.embedding.AllMiniLmL6V2EmbeddingModel;
 import dev.langchain4j.model.embedding.EmbeddingModel;
 import dev.langchain4j.model.openai.OpenAiTokenizer;
+import dev.langchain4j.store.embedding.EmbeddingStore;
 import dev.langchain4j.store.embedding.EmbeddingStoreIngestor;
 import io.milvus.client.MilvusServiceClient;
 import io.milvus.common.clientenum.ConsistencyLevelEnum;
 import io.milvus.param.ConnectParam;
 import lombok.Data;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import scl.langchain4j.constants.MilvusConstants;
+import scl.langchain4j.rag.MilvusService;
 import scl.langchain4j.store.CustomMilvusEmbeddingStore;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static dev.langchain4j.model.openai.OpenAiModelName.GPT_3_5_TURBO;
+
 
 /**
  * @author sichaolong
@@ -79,48 +87,5 @@ public class MilvusConfig {
             .withDatabaseName(MilvusConstants.DATABASE_NAME)
             .build();
         return new MilvusServiceClient(connectParam);
-    }
-
-
-    /**
-     * 知识库milvus向量存储组件
-     *
-     * @return
-     */
-    @Bean
-    public CustomMilvusEmbeddingStore milvusEmbeddingStore() {
-        CustomMilvusEmbeddingStore embeddingStore = new CustomMilvusEmbeddingStore(
-            MilvusConstants.DATABASE_NAME,
-            MilvusConstants.Collection.COLLECTION_NAME_QUESTIONS_ENGLISH_28_23,
-            MilvusConstants.METRIC_TYPE_COSINE,
-            ConsistencyLevelEnum.STRONG);
-        return embeddingStore;
-    }
-
-
-    /**
-     * 本地知识库Embedding组件
-     */
-    @Bean
-    public EmbeddingModel embeddingModel() {
-        // 维度384
-        return new AllMiniLmL6V2EmbeddingModel();
-    }
-
-
-    /**
-     * 本地知识库文档切分组件
-     *
-     * @return
-     */
-    @Bean
-    public EmbeddingStoreIngestor embeddingStoreIngestor() {
-        DocumentSplitter documentSplitter = DocumentSplitters.recursive(maxSegmentSizeInTokens, maxOverlapSizeInTokens, new OpenAiTokenizer(GPT_3_5_TURBO));
-        EmbeddingStoreIngestor embeddingStoreIngestor = EmbeddingStoreIngestor.builder()
-            .documentSplitter(documentSplitter)
-            .embeddingModel(embeddingModel())
-            .embeddingStore(milvusEmbeddingStore())
-            .build();
-        return embeddingStoreIngestor;
     }
 }

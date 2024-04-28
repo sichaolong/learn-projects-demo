@@ -61,6 +61,10 @@ public class RAGServiceTest {
             "B.just as\n" +
             "C.as if\n" +
             "D.as have";
+
+
+        // 小学翻译
+        question = "我和我的朋友去旅行。 I _ with my friends.";
         Pair<String, Response<AiMessage>> responsePair = ragService.ask(question, LLMConstants.ModelKey.AZURE_BASE_4);
 
         Response<AiMessage> ar = responsePair.getRight();
@@ -81,6 +85,10 @@ public class RAGServiceTest {
      */
     @Test
     public void testRetrieveAndAsk(){
+
+        // 高中英语单选
+        String collectionName = MilvusConstants.Collection.COLLECTION_NAME_QUESTIONS_ENGLISH_28_23;
+
         String question = "给出下列答案的正确选项：\n" +
             "Where shall we go for the holiday, to the park or to the school? –_ I don’t really mind. Forget it! Why not? What’s the point? It’s up to you! A.Forget it !\n" +
             "A.Forget it ! B.Why not ? C.What’ s the point ? D.It’ s up to you!";
@@ -108,7 +116,11 @@ public class RAGServiceTest {
             "B.just as\n" +
             "C.as if\n" +
             "D.as have";
-        Pair<String, Response<AiMessage>> responsePair = ragService.retrieveAndAsk(null, question, LLMConstants.ModelKey.QIANFAN_ERNIE_4_0_8K, 3, 0.6d);
+
+        // 小学翻译汉译英语
+        question = "翻译填空，我和我的朋友去旅行。 I _ with my friends.";
+        collectionName = MilvusConstants.Collection.COLLECTION_NAME_QUESTIONS_ENGLISH_3_030602;
+        Pair<String, Response<AiMessage>> responsePair = ragService.retrieveAndAsk(collectionName, question, LLMConstants.ModelKey.QIANFAN_ERNIE_4_0_8K, 3, 0.6d);
 
         String questionText = responsePair.getLeft();
         Response<AiMessage> ar = responsePair.getRight();
