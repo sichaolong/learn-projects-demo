@@ -144,7 +144,7 @@ public class MilvusConstants {
 
         public static final String COLLECTION_NAME_QUESTIONS_ENGLISH_3_030602 = COLLECTION_NAME_QUESTIONS_PREFIX + "3_030602";
 
-        public static final String COLLECTION_NAME_QUESTIONS_ENGLISH_3_2807_DESC = "用于大模型RAG增强检索链的试题平台已经生产（有答案、解析）的试题集合（小学英语翻译）";
+        public static final String COLLECTION_NAME_QUESTIONS_ENGLISH_3_030602_DESC = "用于大模型RAG增强检索链的试题平台已经生产（有答案、解析）的试题集合（小学英语翻译）";
 
 
     }

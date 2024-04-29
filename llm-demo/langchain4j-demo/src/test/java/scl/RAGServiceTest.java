@@ -27,10 +27,10 @@ public class RAGServiceTest {
     RAGService ragService;
 
     @Test
-    public void testRetrieveAndCreatePrompt(){
+    public void testRetrieveAndCreatePrompt() {
         String question = "Where shall we go for the holiday, to the park or to the cinema?";
-        Prompt prompt = ragService.retrieveAndCreatePrompt(null,question,3,0.6d);
-        log.info("rag text fill in prompt:{}",prompt.text());
+        Prompt prompt = ragService.retrieveAndCreatePrompt(null, question, 3, 0.6d);
+        log.info("rag text fill in prompt:{}", prompt.text());
     }
 
 
@@ -39,7 +39,7 @@ public class RAGServiceTest {
      */
 
     @Test
-    public void testAsk(){
+    public void testAsk() {
         String question = "给出下列答案的正确选项：\n" +
             "Where shall we go for the holiday, to the park or to the school? –_ I don’t really mind. Forget it! Why not? What’s the point? It’s up to you! A.Forget it !\n" +
             "A.Forget it ! B.Why not ? C.What’ s the point ? D.It’ s up to you!";
@@ -73,18 +73,18 @@ public class RAGServiceTest {
         int inputTokenCount = ar.tokenUsage().inputTokenCount();
         int outputTokenCount = ar.tokenUsage().outputTokenCount();
 
-        log.info("question text:{}",questionText);
-        log.info("ai response message text:{}",ar.content().text());
+        log.info("question text:{}", questionText);
+        log.info("ai response message text:{}", ar.content().text());
 
-        log.info("input token:{}",inputTokenCount);
-        log.info("output token:{}",outputTokenCount);
+        log.info("input token:{}", inputTokenCount);
+        log.info("output token:{}", outputTokenCount);
     }
 
     /**
      * 测试RAG问答
      */
     @Test
-    public void testRetrieveAndAsk(){
+    public void testRetrieveAndAsk() {
 
         // 高中英语单选
         String collectionName = MilvusConstants.Collection.COLLECTION_NAME_QUESTIONS_ENGLISH_28_23;
@@ -118,8 +118,12 @@ public class RAGServiceTest {
             "D.as have";
 
         // 小学翻译汉译英语
-        question = "翻译填空，我和我的朋友去旅行。 I _ with my friends.";
         collectionName = MilvusConstants.Collection.COLLECTION_NAME_QUESTIONS_ENGLISH_3_030602;
+        question = "翻译填空，我和我的朋友去旅行。 I ____ with my friends.";
+        question = "翻译填空，我和我的朋友将要去旅行。 I ____ with my friends.";
+        question = "我和我的朋友已经去旅游了 。 I _ with my friends.";
+
+
         Pair<String, Response<AiMessage>> responsePair = ragService.retrieveAndAsk(collectionName, question, LLMConstants.ModelKey.QIANFAN_ERNIE_4_0_8K, 3, 0.6d);
 
         String questionText = responsePair.getLeft();
@@ -127,10 +131,10 @@ public class RAGServiceTest {
         int inputTokenCount = ar.tokenUsage().inputTokenCount();
         int outputTokenCount = ar.tokenUsage().outputTokenCount();
 
-        log.info("question text:{}",questionText);
-        log.info("ai response message text:{}",ar.content().text());
-        log.info("input token:{}",inputTokenCount);
-        log.info("output token:{}",outputTokenCount);
+        log.info("question text:{}", questionText);
+        log.info("ai response message text:{}", ar.content().text());
+        log.info("input token:{}", inputTokenCount);
+        log.info("output token:{}", outputTokenCount);
 
     }
 }

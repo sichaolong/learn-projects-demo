@@ -153,7 +153,6 @@ public class KnowledgeBaseServiceTest {
     }
 
 
-
     /**
      * 根据qid将solr试题构建到本地知识库
      *
@@ -167,14 +166,15 @@ public class KnowledgeBaseServiceTest {
         // qids.add("1922726081847296");
         // qids.add("2466657146732545");
 
-         collectionName = MilvusConstants.Collection.COLLECTION_NAME_QUESTIONS_ENGLISH_3_030602;
-         qids.add("2490776046460929");
+        collectionName = MilvusConstants.Collection.COLLECTION_NAME_QUESTIONS_ENGLISH_3_030602;
+        qids.add("2490776046460929");
 
         List<KnowledgeBaseItem> knowledgeBaseItems = getKnowledgeBaseItemByQids(qids);
         log.info("从solr查询的试题数据量：{}", knowledgeBaseItems.size());
         log.info("数据示例：{}", JSON.toJSONString(knowledgeBaseItems));
         knowledgeBaseService.embeddingAndStore(collectionName, knowledgeBaseItems);
     }
+
     private List<KnowledgeBaseItem> getKnowledgeBaseItemByQids(List<String> qids) {
         QuestionSearchParams solrSearchParams = new QuestionSearchParams();
         solrSearchParams.setQuestionIds(qids);

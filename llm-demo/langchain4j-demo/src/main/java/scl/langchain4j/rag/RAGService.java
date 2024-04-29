@@ -1,4 +1,5 @@
 package scl.langchain4j.rag;
+
 import dev.langchain4j.data.embedding.Embedding;
 import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.data.segment.TextSegment;
@@ -18,6 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
+
 import static java.util.stream.Collectors.joining;
 import static scl.langchain4j.constants.LLMConstants.*;
 import static scl.langchain4j.rag.KnowledgeBaseService.EMBEDDING_MODEL;

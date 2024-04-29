@@ -91,16 +91,19 @@ public class SolrServiceImpl implements SolrService {
                 String id = result.getFieldValue("id").toString();
                 String stem = result.getFieldValue("stem").toString();
                 String textStem = result.getFieldValue("textStem").toString();
-                String answer = result.getFieldValue("answer").toString();
-                String explanation = result.getFieldValue("explanation").toString();
+                Object answer = result.getFieldValue("answer");
+                Object explanation = result.getFieldValue("explanation");
+                if(answer == null || explanation == null) {
+                    logger.info("answer or explanation is null: {}", JSON.toJSONString(result));
+                    continue;
+                }
                 Integer courseId = (Integer) result.getFieldValue("courseId");
                 String typeId = result.getFieldValue("typeId").toString();
-
                 PublishedQuestion temp = new PublishedQuestion();
                 temp.setId(id);
                 temp.setStem(stem);
-                temp.setAnswer(answer);
-                temp.setExplanation(explanation);
+                temp.setAnswer(answer.toString());
+                temp.setExplanation(explanation.toString());
                 temp.setCourseId(courseId);
                 temp.setTextStem(textStem);
                 temp.setTypeId(typeId);

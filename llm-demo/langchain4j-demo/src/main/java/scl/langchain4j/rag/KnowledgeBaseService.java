@@ -88,8 +88,11 @@ public class KnowledgeBaseService implements InitializingBean {
         EMBEDDING_STORE_INGESTOR_MAP.put(store1, createEmbeddingStoreIngestor(store1));
         EMBEDDING_STORE_INGESTOR_MAP.put(store2, createEmbeddingStoreIngestor(store2));
 
-        retrieveEnable(MilvusConstants.Collection.COLLECTION_NAME_QUESTIONS_ENGLISH_28_23);
-        retrieveEnable(MilvusConstants.Collection.COLLECTION_NAME_QUESTIONS_ENGLISH_3_030602);
+        // init or load collection
+        retrieveEnable(MilvusConstants.Collection.COLLECTION_NAME_QUESTIONS_ENGLISH_28_23,
+            MilvusConstants.Collection.COLLECTION_NAME_QUESTIONS_ENGLISH_28_23_DESC);
+        retrieveEnable(MilvusConstants.Collection.COLLECTION_NAME_QUESTIONS_ENGLISH_3_030602,
+            MilvusConstants.Collection.COLLECTION_NAME_QUESTIONS_ENGLISH_3_030602_DESC);
     }
 
 
@@ -173,7 +176,7 @@ public class KnowledgeBaseService implements InitializingBean {
 
     EmbeddingStoreIngestor getEmbeddingStoreIngestor(CustomMilvusEmbeddingStore store) {
         EmbeddingStoreIngestor ingestor = EMBEDDING_STORE_INGESTOR_MAP.getOrDefault(store, null);
-        if(ingestor == null){
+        if (ingestor == null) {
             throw new RuntimeException("no embedding store ingestor");
         }
         return ingestor;
@@ -182,13 +185,14 @@ public class KnowledgeBaseService implements InitializingBean {
 
     /**
      * 是否开启检索增强生成
+     *
      * @throws Exception
      */
 
-    public void retrieveEnable(String collectionName) {
+    public void retrieveEnable(String collectionName, String collectionDesc) {
         log.info("是否开启增强检索生成:{}", milvusConfig.isRetrieveEmbeddingsOnSearch());
-        if(milvusConfig.isRetrieveEmbeddingsOnSearch()){
-            initMilvusCollection(MilvusConstants.DATABASE_NAME,collectionName);
+        if (milvusConfig.isRetrieveEmbeddingsOnSearch()) {
+            initMilvusCollection(MilvusConstants.DATABASE_NAME, collectionDesc, collectionName);
         }
     }
 
@@ -196,12 +200,12 @@ public class KnowledgeBaseService implements InitializingBean {
     /**
      * milvus本地知识库
      */
-    private void initMilvusCollection(String databaseName, String collectionName) {
+    private void initMilvusCollection(String databaseName, String collectionName, String collectionDesc) {
         boolean exist = milvusService.isExitCollection(databaseName, collectionName);
         log.info("本地向量库是否存在:{}", exist);
         if (!exist) {
             List<FieldType> fieldTypeList = buildFieldTypeList();
-            boolean success = milvusService.creatCollection(databaseName, collectionName, MilvusConstants.Collection.COLLECTION_NAME_QUESTIONS_ENGLISH_28_23, fieldTypeList);
+            boolean success = milvusService.creatCollection(databaseName, collectionName, collectionDesc, fieldTypeList);
             if (success) {
                 milvusService.createIndex(collectionName,
                     MilvusConstants.Field.EIGENVALUES,
@@ -214,7 +218,7 @@ public class KnowledgeBaseService implements InitializingBean {
         log.info("加载 milvus 的 database：{}, collection:{} 结果状态：{}", databaseName, collectionName, success);
     }
 
-    private void closeMilvusCollection(String databaseName,String collectionName) {
+    private void closeMilvusCollection(String databaseName, String collectionName) {
         boolean success = milvusService.releaseCollection(collectionName);
         log.info("释放 milvus 的 database：{}, collection:{} 结果状态：{}", databaseName, collectionName, success);
     }
@@ -264,7 +268,6 @@ public class KnowledgeBaseService implements InitializingBean {
         return fieldTypeList;
 
     }
-
 
 
 }

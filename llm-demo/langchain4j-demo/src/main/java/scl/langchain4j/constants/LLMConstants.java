@@ -43,7 +43,7 @@ public class LLMConstants {
         "【答案】：xxx（只写英文，首字母小写）；
         【解析】：xxx（首先在每个小题最开始写出考查什么词性，再翻译中文单词或短语的英文释义，英文首字母小写，列举出中文单词或短语的全部英文释义。
         格式为“中文单词或短语表达为xxx，每小题结论都写成故填“x”）；"。语言需要简洁，突出重点，英文翻译要符合习惯和语法。
-        
+                
         注意,回答的内容不能让用户感知到已知信息的存在
         """);
     public static final PromptTemplate PROMPT_USER_TEMPLATE_2 = PromptTemplate.from("""
