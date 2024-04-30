@@ -4,15 +4,16 @@ import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.model.input.Prompt;
 import dev.langchain4j.model.output.Response;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.tuple.Pair;
+import org.assertj.core.util.Maps;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import scl.langchain4j.constants.LLMConstants;
 import scl.langchain4j.constants.MilvusConstants;
-import scl.langchain4j.rag.RAGService;
+import scl.langchain4j.rag.milvus.MilvusRAGService;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -21,10 +22,10 @@ import java.util.Map;
  */
 @SpringBootTest
 @Slf4j
-public class RAGServiceTest {
+public class MilvusRAGServiceTest {
 
     @Autowired
-    RAGService ragService;
+    MilvusRAGService ragService;
 
     @Test
     public void testRetrieveAndCreatePrompt() {
@@ -88,6 +89,7 @@ public class RAGServiceTest {
 
         // 高中英语单选
         String collectionName = MilvusConstants.Collection.COLLECTION_NAME_QUESTIONS_ENGLISH_28_23;
+        Map<String, String> conditionMaps = Maps.newHashMap(MilvusConstants.Field.QUESTION_COURSEID, collectionName);
 
         String question = "给出下列答案的正确选项：\n" +
             "Where shall we go for the holiday, to the park or to the school? –_ I don’t really mind. Forget it! Why not? What’s the point? It’s up to you! A.Forget it !\n" +
@@ -119,12 +121,13 @@ public class RAGServiceTest {
 
         // 小学翻译汉译英语
         collectionName = MilvusConstants.Collection.COLLECTION_NAME_QUESTIONS_ENGLISH_3_030602;
+        conditionMaps.put(MilvusConstants.Field.QUESTION_COURSEID, collectionName);
         question = "翻译填空，我和我的朋友去旅行。 I ____ with my friends.";
         question = "翻译填空，我和我的朋友将要去旅行。 I ____ with my friends.";
-        question = "我和我的朋友已经去旅游了 。 I _ with my friends.";
+        question = "翻译填空，我和我的朋友已经去旅游了 。 I ____ with my friends.";
 
 
-        Pair<String, Response<AiMessage>> responsePair = ragService.retrieveAndAsk(collectionName, question, LLMConstants.ModelKey.QIANFAN_ERNIE_4_0_8K, 3, 0.6d);
+        Pair<String, Response<AiMessage>> responsePair = ragService.retrieveAndAsk(conditionMaps, question, LLMConstants.ModelKey.QIANFAN_ERNIE_4_0_8K, 3, 0.6d);
 
         String questionText = responsePair.getLeft();
         Response<AiMessage> ar = responsePair.getRight();

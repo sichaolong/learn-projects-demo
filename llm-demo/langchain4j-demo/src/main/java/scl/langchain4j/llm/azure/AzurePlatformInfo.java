@@ -1,4 +1,4 @@
-package scl.langchain4j.llm.Azure;
+package scl.langchain4j.llm.azure;
 
 import lombok.Data;
 import scl.langchain4j.llm.PlatformInfo;

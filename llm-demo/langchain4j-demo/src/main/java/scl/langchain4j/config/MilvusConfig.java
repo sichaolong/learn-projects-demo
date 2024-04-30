@@ -9,9 +9,6 @@ import org.springframework.context.annotation.Configuration;
 import scl.langchain4j.constants.MilvusConstants;
 
 
-
-
-
 /**
  * @author sichaolong
  * @createdate 2024/4/17 15:51
@@ -32,7 +29,7 @@ public class MilvusConfig {
     /**
      * 是否开启RAG检索增强
      */
-    @Value("${milvus.rag.retrieveEmbeddingsOnSearch:true}")
+    @Value("${milvus.rag.retrieveEmbeddingsOnSearch:false}")
     private boolean retrieveEmbeddingsOnSearch;
 
     /**

@@ -1,8 +1,7 @@
-package scl.langchain4j.rag;
+package scl.langchain4j.rag.milvus;
 
 
 import dev.langchain4j.data.document.Metadata;
-import dev.langchain4j.store.embedding.EmbeddingSearchRequest;
 import io.milvus.client.MilvusServiceClient;
 import io.milvus.common.clientenum.ConsistencyLevelEnum;
 import io.milvus.grpc.FlushResponse;
@@ -31,7 +30,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import scl.langchain4j.config.MilvusConfig;
 import scl.langchain4j.constants.MilvusConstants;
-import scl.utils.MilvusMetadataFilterUtils;
 import scl.utils.MilvusUtils;
 
 import java.util.ArrayList;
@@ -39,7 +37,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import static java.lang.String.format;
-import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.joining;
 
 /**

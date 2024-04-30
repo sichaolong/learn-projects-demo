@@ -1,4 +1,4 @@
-package scl.langchain4j.rag;
+package scl.langchain4j.rag.milvus;
 
 
 import dev.langchain4j.data.document.Document;
@@ -34,11 +34,11 @@ import static dev.langchain4j.model.openai.OpenAiModelName.GPT_3_5_TURBO;
 /**
  * @author sichaolong
  * @createdate 2024/4/19 16:52
- * 构建Milvus本地知识向量库
+ * Milvus本地知识向量库
  */
 @Service
 @Slf4j
-public class KnowledgeBaseService implements InitializingBean {
+public class MilvusKnowledgeBaseService implements InitializingBean {
 
     private static final String KNOWLEDGE_ITEM_FORMAT = "【题干】：%s；【答案】：%s；【解析】：%s";
 
@@ -193,6 +193,8 @@ public class KnowledgeBaseService implements InitializingBean {
         log.info("是否开启增强检索生成:{}", milvusConfig.isRetrieveEmbeddingsOnSearch());
         if (milvusConfig.isRetrieveEmbeddingsOnSearch()) {
             initMilvusCollection(MilvusConstants.DATABASE_NAME, collectionDesc, collectionName);
+        } else {
+            closeMilvusCollection(MilvusConstants.DATABASE_NAME, collectionName);
         }
     }
 
@@ -266,7 +268,6 @@ public class KnowledgeBaseService implements InitializingBean {
         fieldTypeList.add(metadata);
         fieldTypeList.add(eigenvalues);
         return fieldTypeList;
-
     }
 
 

@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import scl.langchain4j.constants.MilvusConstants;
 import scl.langchain4j.pojo.KnowledgeBaseItem;
-import scl.langchain4j.rag.KnowledgeBaseService;
+import scl.langchain4j.rag.milvus.MilvusKnowledgeBaseService;
 import scl.pojo.Pagination;
 import scl.pojo.PublishedQuestion;
 import scl.pojo.QuestionSearchParams;
@@ -22,15 +22,15 @@ import java.util.*;
  * @author sichaolong
  * @createdate 2024/4/20 14:53
  * <p>
- * 构建本地知识库
+ * 构建Milvus本地知识库
  */
 
 @SpringBootTest
 @Slf4j
-public class KnowledgeBaseServiceTest {
+public class MilvusKnowledgeBaseServiceTest {
 
     @Autowired
-    KnowledgeBaseService knowledgeBaseService;
+    MilvusKnowledgeBaseService knowledgeBaseService;
 
     @Autowired
     SolrService solrService;
@@ -53,16 +53,18 @@ public class KnowledgeBaseServiceTest {
     }
 
 
+    /**
+     * 测试 构建【小学英语翻译】Milvus本地知识库
+     * 从solr数据源头查询数据，然后数据切分、embedding保存
+     */
     @Test
     public void testBuildKnowledgeBase_3_030602() throws InterruptedException {
-
-        String collectionName = MilvusConstants.Collection.COLLECTION_NAME_QUESTIONS_ENGLISH_3_030602;
 
         // 小学英语
         Integer courseId = 3;
         // 翻译题
         String questionTypeId = "030602";
-
+        String collectionName = MilvusConstants.Collection.COLLECTION_NAME_QUESTIONS_PREFIX + courseId + "_" + questionTypeId;
         Integer rows = 500;
         Integer page = 1;
 
@@ -90,7 +92,8 @@ public class KnowledgeBaseServiceTest {
     }
 
     /**
-     * 测试 构建Milvus本地知识库，从solr数据源头查询数据，然后数据切分、embedding保存
+     * 测试 构建【高中英语单选】Milvus本地知识库
+     * 从solr数据源头查询数据，然后数据切分、embedding保存
      */
     @Test
     public void testBuildKnowledgeBase_28_2803() throws InterruptedException {
@@ -129,6 +132,28 @@ public class KnowledgeBaseServiceTest {
 
     }
 
+
+    /**
+     * 测试根据试题IDS 构建Milvus本地知识库
+     *
+     * @throws InterruptedException
+     */
+    @Test
+    public void testBuildKnowledgeBaseByQids() {
+        List<String> qids = new ArrayList<>();
+        // qids.add("1922726081847296");
+        // qids.add("2466657146732545");
+        // qids.add("2490776046460929");
+
+        List<KnowledgeBaseItem> knowledgeBaseItems = getKnowledgeBaseItemByQids(qids);
+        log.info("从solr查询的试题数据量：{}", knowledgeBaseItems.size());
+        for (KnowledgeBaseItem item : knowledgeBaseItems) {
+            log.info("数据示例：{}", JSON.toJSONString(item));
+            String collectionName = MilvusConstants.Collection.COLLECTION_NAME_QUESTIONS_PREFIX + item.getCourseId() + "_" + item.getTypeId();
+            knowledgeBaseService.embeddingAndStore(collectionName, item);
+        }
+    }
+
     private List<KnowledgeBaseItem> getKnowledgeBaseItems(Integer courseId, String questionTypeId, Integer rows, Integer page) {
         QuestionSearchParams solrSearchParams = new QuestionSearchParams();
         solrSearchParams.setRows(rows);
@@ -150,29 +175,6 @@ public class KnowledgeBaseServiceTest {
         }
         return itemList;
 
-    }
-
-
-    /**
-     * 根据qid将solr试题构建到本地知识库
-     *
-     * @throws InterruptedException
-     */
-    @Test
-    public void testBuildKnowledgeBaseByQids() {
-        String collectionName = MilvusConstants.Collection.COLLECTION_NAME_QUESTIONS_ENGLISH_28_23;
-
-        List<String> qids = new ArrayList<>();
-        // qids.add("1922726081847296");
-        // qids.add("2466657146732545");
-
-        collectionName = MilvusConstants.Collection.COLLECTION_NAME_QUESTIONS_ENGLISH_3_030602;
-        qids.add("2490776046460929");
-
-        List<KnowledgeBaseItem> knowledgeBaseItems = getKnowledgeBaseItemByQids(qids);
-        log.info("从solr查询的试题数据量：{}", knowledgeBaseItems.size());
-        log.info("数据示例：{}", JSON.toJSONString(knowledgeBaseItems));
-        knowledgeBaseService.embeddingAndStore(collectionName, knowledgeBaseItems);
     }
 
     private List<KnowledgeBaseItem> getKnowledgeBaseItemByQids(List<String> qids) {
