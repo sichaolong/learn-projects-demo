@@ -20,6 +20,8 @@ public class TestDemo {
             //请求URL，请替换自己的真实地址
             String url = "http://openai.100tal.com/aitext/process-verifier";
 
+            url = "https://openai.100tal.com/aitext/multi-70b/multi-70b/http";
+
             //请求方式
             RequestMethod requestMethod = RequestMethod.POST;
 

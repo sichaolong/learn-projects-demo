@@ -2,11 +2,11 @@ package scl.springaidemo.haoweilai.sign.http.application_x_www_form_urlencoded;
 
 
 
-import com.tal.ailab.util.DateUtil;
 import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
 import scl.springaidemo.demos.haoweilai.signature.enums.RequestMethod;
 import scl.springaidemo.demos.haoweilai.signature.sign.SendSignHttp;
+import scl.springaidemo.demos.haoweilai.signature.util.DateUtil;
 
 import java.nio.charset.Charset;
 import java.util.Date;

@@ -1,4 +1,4 @@
-package com.tal.ailab.util;
+package scl.springaidemo.demos.haoweilai.signature.util;
 
 import java.time.Instant;
 import java.time.LocalDateTime;

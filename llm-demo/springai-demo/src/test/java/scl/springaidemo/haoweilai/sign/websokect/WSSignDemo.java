@@ -1,11 +1,11 @@
 package scl.springaidemo.haoweilai.sign.websokect;
 
-import com.tal.ailab.util.DateUtil;
 import org.java_websocket.WebSocket;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.drafts.Draft_6455;
 import org.java_websocket.handshake.ServerHandshake;
 import scl.springaidemo.demos.haoweilai.signature.sign.GetWSSign;
+import scl.springaidemo.demos.haoweilai.signature.util.DateUtil;
 
 import java.net.URI;
 import java.util.Date;
@@ -33,7 +33,8 @@ public class WSSignDemo {
                 access_key_id,
                 access_key_secret,
                 timestamp,
-                urlParams);
+                urlParams,
+            null);
 
         /**
          * 使用第三方websocket客户端，可根据自己需求使用其他客户端

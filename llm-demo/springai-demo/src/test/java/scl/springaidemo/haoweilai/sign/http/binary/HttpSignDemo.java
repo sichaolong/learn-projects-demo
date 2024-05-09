@@ -1,10 +1,10 @@
 package scl.springaidemo.haoweilai.sign.http.binary;
 
-import com.tal.ailab.util.DateUtil;
 import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
 import scl.springaidemo.demos.haoweilai.signature.enums.RequestMethod;
 import scl.springaidemo.demos.haoweilai.signature.sign.SendSignHttp;
+import scl.springaidemo.demos.haoweilai.signature.util.DateUtil;
 
 import java.io.File;
 import java.io.FileInputStream;

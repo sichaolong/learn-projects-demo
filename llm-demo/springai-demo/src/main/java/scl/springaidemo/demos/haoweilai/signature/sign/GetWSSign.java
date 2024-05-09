@@ -23,7 +23,8 @@ public class GetWSSign {
             String access_key_id,
             String access_key_secret,
             Date timestamp,
-            Map<String, Object> urlParams
+            Map<String, Object> urlParams,
+            Map<String, Object> body
     ) throws Exception{
 
         SignatureSDK.getSignature(
@@ -31,7 +32,7 @@ public class GetWSSign {
                 access_key_secret,
                 timestamp,
                 urlParams,
-                null,
+                body,
                 RequestMethod.GET,
                 APPLICATION_JSON);
         //签名鉴权参数放在URL中
