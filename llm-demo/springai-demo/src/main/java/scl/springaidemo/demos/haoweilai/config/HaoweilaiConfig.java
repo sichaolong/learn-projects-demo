@@ -25,11 +25,11 @@ public class HaoweilaiConfig {
     @Value("${spring.ai.haoweilai.mathgpt.http.path:aitext/multi-70b/multi-70b/http}")
     public  String httpPath;
 
-    @Value("${spring.ai.haoweilai.mathgpt.wss.baseUrl:wss://openai.100tal.com/}")
-    public  String wssBaseUrl;
+    @Value("${spring.ai.haoweilai.mathgpt.ws.baseUrl:wss://openai.100tal.com/}")
+    public  String wsBaseUrl;
 
-    @Value("${spring.ai.haoweilai.mathgpt.wss.path:aitext/multi-70b/multi-70b/wss}")
-    public  String wssPath;
+    @Value("${spring.ai.haoweilai.mathgpt.ws.path:aitext/multi-70b/multi-70b/ws}")
+    public  String wsPath;
 
     @Value("${spring.ai.haoweilai.mathgpt.accessKey:}")
     private String accessKey;

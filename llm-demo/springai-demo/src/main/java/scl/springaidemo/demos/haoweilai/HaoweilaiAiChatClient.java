@@ -15,6 +15,7 @@ import org.springframework.ai.chat.ChatClient;
 import org.springframework.ai.chat.ChatResponse;
 import org.springframework.ai.chat.Generation;
 import org.springframework.ai.chat.StreamingChatClient;
+import org.springframework.ai.chat.messages.AssistantMessage;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.model.ModelOptions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,7 @@ import scl.springaidemo.demos.haoweilai.signature.util.DateUtil;
 import java.net.URI;
 import java.nio.charset.Charset;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static scl.springaidemo.demos.haoweilai.signature.util.HttpUtil.APPLICATION_JSON;
 
@@ -42,6 +44,8 @@ import static scl.springaidemo.demos.haoweilai.signature.util.HttpUtil.APPLICATI
 public class HaoweilaiAiChatClient implements ChatClient, StreamingChatClient {
 
     private final Logger LOGGER = LoggerFactory.getLogger(HaoweilaiAiChatClient.class);
+
+    private final static String STREAM_RESPONSE_FINISHED_KEY = "streamResponseFinishedKey";
 
     private HaoweilaiChatOptions defaultHaoweilaiChatOptions;
 
@@ -120,7 +124,7 @@ public class HaoweilaiAiChatClient implements ChatClient, StreamingChatClient {
 
         String accessKey = properties.getAccessKey();
         String secretKey = properties.getSecretKey();
-        String url = String.format("%s%s", properties.getWssBaseUrl(), properties.getWssPath());
+        String url = String.format("%s%s", properties.getWsBaseUrl(), properties.getWsPath());
         Map<String, Object> params = new HashMap<>();
         Map<String, Object> body = Map.of("messages", prompt.getInstructions(),
             "subject", defaultHaoweilaiChatOptions.getSubject(),
@@ -171,6 +175,7 @@ public class HaoweilaiAiChatClient implements ChatClient, StreamingChatClient {
 
     /**
      * 签名授权并调用Stream API
+     * 响应结束马上关闭ws连接
      *
      * @param accessKey
      * @param secretKey
@@ -189,56 +194,75 @@ public class HaoweilaiAiChatClient implements ChatClient, StreamingChatClient {
             secretKey,
             timestamp,
             params,
-            body);
+            null);
 
         final Flux<ChatResponse>[] chatResponseFlux = new Flux[]{null};
-        WebSocketClient client = new WebSocketClient(new URI(url), new Draft_6455(), null, 10000) {
+        final WebSocketClient[] webSocketClients = new WebSocketClient[]{null};
+        final URI[] uris = new URI[]{new URI(url)};
 
-            @Override
-            public void onOpen(ServerHandshake serverHandshake) {
-                LOGGER.info("Connection is opened");
-            }
+        chatResponseFlux[0] = Flux.create(sink -> {
+            webSocketClients[0] = new WebSocketClient(uris[0], new Draft_6455(), null, 10000) {
+                @Override
+                public void onOpen(ServerHandshake serverHandshake) {
+                    LOGGER.info("Connection is opened");
+                }
 
-            @Override
-            public void onMessage(String msg) {
-                LOGGER.info("received:" + msg);
-                chatResponseFlux[0] = Flux.create(sink -> {
-                    sink.next(transformMsgToChatResponse(msg));
-                });
-            }
+                @Override
+                public void onMessage(String msg) {
+                    LOGGER.info("received:" + msg);
+                    ChatResponse chatResponse = transformMsgToChatResponse(msg);
 
-            @Override
-            public void onClose(int code, String reason, boolean remote) {
-                LOGGER.info("code：" + code);
-                LOGGER.info("reason：" + reason);
-                LOGGER.info("remote：" + remote);
-            }
+                    LOGGER.info("\n chatResponse:{},is response finished?{}", chatResponse, isResponseFished(chatResponse));
+                    // 如果响应已经结束，则关闭流和ws
+                    if (isResponseFished(chatResponse)) {
+                        sink.complete();
+                        webSocketClients[0].close();
+                    }
+                    sink.next(chatResponse);
+                }
 
-            @Override
-            public void onError(Exception e) {
-                e.printStackTrace();
-                chatResponseFlux[0] = Flux.create(sink -> {
+                @Override
+                public void onClose(int code, String reason, boolean remote) {
+                    LOGGER.info("code：" + code);
+                    LOGGER.info("reason：" + reason);
+                    LOGGER.info("remote：" + remote);
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    e.printStackTrace();
                     sink.next(transformErrorToChatResponse(e.getMessage()));
                     sink.complete();
-                });
+                    webSocketClients[0].close();
+                }
+            };
+
+            webSocketClients[0].connect();
+            LOGGER.info("draft:{}", webSocketClients[0].getDraft());
+
+            while (!webSocketClients[0].getReadyState().equals(WebSocket.READYSTATE.OPEN)) {
+                LOGGER.info("ws还没有打开");
+                try {
+                    Thread.sleep(1000);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
             }
-        };
-
-        client.connect();
-        LOGGER.info("draft:{}", client.getDraft());
-
-        while (!client.getReadyState().equals(WebSocket.READYSTATE.OPEN)) {
-            LOGGER.info("还没有打开");
-            Thread.sleep(1000);
-        }
-
-
-//        LOGGER.info("");
-//        for (int i = 0; i < 10; i++) {
-//            client.send("hello world:" + System.currentTimeMillis());
-//            Thread.sleep(1000);
-//        }
+            webSocketClients[0].send(JSONObject.toJSONString(body));
+        });
         return chatResponseFlux[0];
+    }
+
+
+    /**
+     * 判断Stream响应是否结束
+     *
+     * @param chatResponse
+     * @return
+     */
+    private boolean isResponseFished(ChatResponse chatResponse) {
+        AssistantMessage output = chatResponse.getResult().getOutput();
+        return (Boolean) output.getProperties().getOrDefault(STREAM_RESPONSE_FINISHED_KEY, false);
     }
 
 
@@ -260,9 +284,15 @@ public class HaoweilaiAiChatClient implements ChatClient, StreamingChatClient {
     private ChatResponse transformMsgToChatResponse(String msg) {
         String result = null;
         HaoweilaiResponse haoweilaiResponse = JSONObject.parseObject(msg, HaoweilaiResponse.class);
-        if (haoweilaiResponse.getCode() == 20000 && StringUtils.isNotEmpty(haoweilaiResponse.getData().getResult())) {
+        if (haoweilaiResponse.getCode() == 20000 && Objects.nonNull(haoweilaiResponse.getData()) && StringUtils.isNotEmpty(haoweilaiResponse.getData().getResult())) {
             result = haoweilaiResponse.getData().getResult();
+            // 本轮流失响应结束，响应结束标志置为true，方便关闭ws
+            if (haoweilaiResponse.getData().getIs_end() == 1) {
+                return new ChatResponse(Arrays.asList(new Generation(result, Map.of(STREAM_RESPONSE_FINISHED_KEY, true))));
+            }
         }
         return new ChatResponse(Arrays.asList(new Generation(result)));
     }
 }
+
+
