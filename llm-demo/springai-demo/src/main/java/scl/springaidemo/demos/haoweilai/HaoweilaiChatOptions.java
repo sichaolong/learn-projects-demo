@@ -1,4 +1,4 @@
-package scl.springaidemo.demos.baidu;
+package scl.springaidemo.demos.haoweilai;
 
 import org.springframework.ai.chat.prompt.ChatOptions;
 import org.springframework.ai.model.function.FunctionCallback;
@@ -11,7 +11,7 @@ import java.util.Set;
  * @author sichaolong
  * @createdate 2024/5/8 16:34
  */
-public class QianfanChatOptions  implements FunctionCallingOptions, ChatOptions {
+public class HaoweilaiChatOptions implements FunctionCallingOptions, ChatOptions {
     @Override
     public Float getTemperature() {
         return null;

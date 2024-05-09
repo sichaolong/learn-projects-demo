@@ -1,4 +1,4 @@
-package scl.springaidemo.demos.baidu;
+package scl.springaidemo.demos.haoweilai;
 
 import com.azure.ai.openai.models.ChatCompletions;
 import com.azure.ai.openai.models.ChatCompletionsOptions;
@@ -19,17 +19,17 @@ import java.util.List;
  * @author sichaolong
  * @createdate 2024/5/8 16:30
  */
-public class QianfanAiChatClient extends AbstractFunctionCallSupport<ChatRequestMessage, ChatCompletionsOptions, ChatCompletions> implements ChatClient, StreamingChatClient {
+public class HaoweilaiAiChatClient extends AbstractFunctionCallSupport<ChatRequestMessage, ChatCompletionsOptions, ChatCompletions> implements ChatClient, StreamingChatClient {
 
 
-    private final Logger logger = org.slf4j.LoggerFactory.getLogger(QianfanAiChatClient.class);
+    private final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(HaoweilaiAiChatClient.class);
 
 
     private static final String DEFAULT_DEPLOYMENT_NAME = "ERNIE-3.5";
     private static final Float DEFAULT_TEMPERATURE = 0.7F;
     private AzureOpenAiChatOptions defaultOptions;
 
-    public QianfanAiChatClient(FunctionCallbackContext functionCallbackContext) {
+    public HaoweilaiAiChatClient(FunctionCallbackContext functionCallbackContext) {
         super(functionCallbackContext);
     }
 

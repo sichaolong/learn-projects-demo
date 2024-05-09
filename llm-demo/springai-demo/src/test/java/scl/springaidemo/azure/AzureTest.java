@@ -1,4 +1,4 @@
-package scl.springaidemo;
+package scl.springaidemo.azure;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.ai.azure.openai.AzureOpenAiChatClient;
@@ -7,6 +7,7 @@ import org.springframework.ai.chat.ChatResponse;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import scl.springaidemo.SpringaiDemoApplication;
 
 /**
  * @author sichaolong
