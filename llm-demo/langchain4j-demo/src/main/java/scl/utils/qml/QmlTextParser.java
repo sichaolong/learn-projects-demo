@@ -1,10 +1,11 @@
-package scl.utils;
+package scl.utils.qml;
 
 import org.apache.commons.lang.CharUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import scl.utils.Utilities;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -13,7 +13,7 @@ import scl.pojo.Pagination;
 import scl.pojo.PublishedQuestion;
 import scl.pojo.QuestionSearchParams;
 import scl.solr.SolrService;
-import scl.utils.QmlTextParser;
+import scl.utils.qml.QmlTextParser;
 
 import java.util.*;
 

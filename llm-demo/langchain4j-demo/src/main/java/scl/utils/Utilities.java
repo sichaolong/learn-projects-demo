@@ -1,5 +1,11 @@
 package scl.utils;
 
+import org.springframework.util.StringUtils;
+import scl.utils.qml.Attr;
+import scl.utils.qml.BlankElement;
+import scl.utils.qml.BlankType;
+import scl.utils.qml.QmlTextParser;
+
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -7,6 +13,8 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.TimeZone;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author sichaolong
@@ -57,4 +65,5 @@ public class Utilities {
         }
         return new String(c);
     }
+
 }

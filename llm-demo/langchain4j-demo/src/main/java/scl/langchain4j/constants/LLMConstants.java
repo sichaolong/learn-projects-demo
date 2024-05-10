@@ -27,6 +27,14 @@ public class LLMConstants {
          """);
 
 
+    public static final PromptTemplate PROMPT_USER_TEMPLATE_1 = PromptTemplate.from("""
+        下面请解答试题:{{question}}，
+        确保答案正确，输出最终的答案与解析，输出格式按照
+        "【答案】：xxx；【解析】：考查语法知识或词汇辨析xxx。句意：——xxx。
+        解析的内容包含如下二个方面：翻译英文题目的中文释义；阐述错误选项的错误原因，说清正确选项在句子中作什么成分，解释选择正确选项的原因。结论统一写成“故选x”;"，
+        语言需要简洁，突出重点，英文翻译要符合习惯和语法。
+        """);
+
     public static final PromptTemplate PROMPT_USER_RAG_TEMPLATE_2 = PromptTemplate.from("""
         根据以下已知信息: 
         {{information}}
@@ -45,6 +53,17 @@ public class LLMConstants {
         格式为“中文单词或短语表达为xxx，每小题结论都写成故填“x”）；"。语言需要简洁，突出重点，英文翻译要符合习惯和语法。
                 
         注意,回答的内容不能让用户感知到已知信息的存在
+        """);
+
+    public static final PromptTemplate PROMPT_USER_RAG_TEMPLATE_4 = PromptTemplate.from("""
+        根据以下已知信息: 
+        {{information}}
+        
+        下面请解答试题:{{question}}，确保答案正确，输出最终的答案与解析，输出格式按照
+        "【答案】：xxx；【解析】：考查语法知识或词汇辨析xxx。句意：——xxx。
+        解析的内容包含如下二个方面：翻译英文题目的中文释义；阐述错误选项的错误原因，说清正确选项在句子中作什么成分，解释选择正确选项的原因。结论统一写成“故选x”;"，
+        
+        语言需要简洁，突出重点，英文翻译要符合习惯和语法。注意,回答的内容不能让用户感知到已知信息的存在。
         """);
     public static final PromptTemplate PROMPT_USER_TEMPLATE_2 = PromptTemplate.from("""
         尽可能准确地回答用户的问题,以下是用户的问题:

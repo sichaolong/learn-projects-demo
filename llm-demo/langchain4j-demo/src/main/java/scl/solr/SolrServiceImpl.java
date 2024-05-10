@@ -1,9 +1,7 @@
 package scl.solr;
 
 import com.alibaba.fastjson.JSON;
-import dev.langchain4j.agent.tool.P;
 import jakarta.annotation.PostConstruct;
-import jakarta.annotation.Resource;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
@@ -13,6 +11,7 @@ import org.apache.solr.client.solrj.SolrRequest;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
+import org.apache.solr.common.params.CommonParams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,10 +21,12 @@ import scl.pojo.Pagination;
 import scl.pojo.PublishedQuestion;
 import scl.pojo.QuestionSearchParams;
 import scl.solr.config.SolrClientConfig;
+import scl.solr.constants.SolrConstants;
 import scl.utils.FieldUtil;
 import scl.utils.Utilities;
 
 import java.lang.reflect.Field;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -117,6 +118,95 @@ public class SolrServiceImpl implements SolrService {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public <T> List<T> solrQuery(String coreName, SolrQuery query, Class<T> clazz) {
+        Pagination<T> pagination = solrQuery(coreName, query, clazz, SolrRequest.METHOD.GET);
+        if (pagination != null) {
+            return pagination.getItems();
+        }
+        return null;
+    }
+
+
+    /**
+     * 试题题干 文本相似性搜索
+     * @param params
+     * @return
+     */
+    @Override
+    public List<PublishedQuestion> getSimilarityQuestions(QuestionSearchParams params) {
+        SolrQuery solrQuery = buildMoreLikeThisQuery(params);
+        logger.info("solr query:{}",solrQuery);
+        return solrQuery(publishedQuestionsCoreName, solrQuery, PublishedQuestion.class);
+    }
+
+    private SolrQuery buildMoreLikeThisQuery(QuestionSearchParams params) {
+        SolrQuery query = new SolrQuery();
+        query.setRequestHandler("/mlt");
+        query.set(SolrConstants.PARAM_MLT_FL, "textStem");
+        query.set(SolrConstants.PARAM_MLT_MINTF, 1);
+        query.set(SolrConstants.PARAM_MLT_MINDF, 1);
+        query.set(SolrConstants.PARAM_FL, "*");
+        query.setRows(params.getRows());
+
+        //重要： MoreLikeThis查询过滤条件要用fq，不能用q（因为mlt查询中q也被用来做相似度查询评分了，没有作为过滤条件）
+        if (params.getCourseId() != null && params.getCourseId() > 0) {
+            query.addFilterQuery(String.format("courseId:%d", params.getCourseId()));
+        }
+
+
+        if (StringUtils.isNotEmpty(params.getTypeId())) {
+            query.addFilterQuery(String.format("typeId:%s", params.getTypeId()));
+        }
+        query.set("stream.body", StringUtils.isEmpty(params.getTextStem()) ? params.getStem() : params.getTextStem());
+        return query;
+    }
+
+    public <T> Pagination<T> solrQuery(String coreName, SolrQuery query, Class<T> clazz, SolrRequest.METHOD method) {
+        if (method == null) {
+            method = SolrRequest.METHOD.GET;
+        }
+        QueryResponse response = null;
+
+        try {
+            response = solrClient.query(coreName, query, method);
+        } catch (Exception e) {
+            logger.error("error:{}",e);
+        }
+        SolrDocumentList docList = response.getResults();
+        DocumentObjectWithEnumBinder binder = new DocumentObjectWithEnumBinder();
+        List<T> results = binder.getBeans(clazz, docList);
+        if (results == null || results.size() == 0) {
+            return null;
+        }
+
+        // 处理highlight字段
+        //        String highLightField = query.get("hl.fl");
+        //        if (!StringUtils.isEmpty(highLightField)) {
+        //            for (T r : results) {
+        //                try {
+        //                    String id = (String) FieldUtils.readField(r, "id", true);
+        //                    String highLightFieldValue =
+        //                        response.getHighlighting().get(id).get(highLightField).get(0);
+        //
+        //                    FieldUtils.writeField(r, highLightField, highLightFieldValue, true);
+        //                } catch (IllegalAccessException e) {
+        //                    continue;
+        //                }
+        //            }
+        //        }
+
+        int start = query.getStart() == null ? 0 : query.getStart();
+        int pageSize = (query.getRows() == null || query.getRows().compareTo(0) <= 0) ?
+            CommonParams.ROWS_DEFAULT :
+            query.getRows();
+        int currentPage = (start / pageSize) + 1;
+        Pagination pagination =
+            new Pagination(currentPage, pageSize, ((int) (response.getResults().getNumFound())), results);
+
+        return pagination;
     }
 
 
