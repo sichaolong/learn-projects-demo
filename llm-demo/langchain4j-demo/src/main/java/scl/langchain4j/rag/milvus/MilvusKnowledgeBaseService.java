@@ -192,7 +192,7 @@ public class MilvusKnowledgeBaseService implements InitializingBean {
     public void retrieveEnable(String collectionName, String collectionDesc) {
         log.info("是否开启增强检索生成:{}", milvusConfig.isRetrieveEmbeddingsOnSearch());
         if (milvusConfig.isRetrieveEmbeddingsOnSearch()) {
-            initMilvusCollection(MilvusConstants.DATABASE_NAME, collectionDesc, collectionName);
+            initMilvusCollection(MilvusConstants.DATABASE_NAME, collectionName, collectionDesc);
         } else {
             closeMilvusCollection(MilvusConstants.DATABASE_NAME, collectionName);
         }

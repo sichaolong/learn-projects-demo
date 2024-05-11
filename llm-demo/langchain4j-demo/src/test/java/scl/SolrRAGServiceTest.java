@@ -2,6 +2,7 @@ package scl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.model.input.Prompt;
 import dev.langchain4j.model.output.Response;
@@ -194,14 +195,15 @@ public class SolrRAGServiceTest {
     @Test
     public void testEvaluation() throws InterruptedException, IOException {
 
+        String filePath = "./result-json-511.txt";
         String typeId = "2803";
         Integer courseId = 28;
-        Integer page = 8;
-        Integer pageSize = 500;
+        Integer page = 20;
+        Integer pageSize = 100;
 
         List<PublishedQuestion> questions = getQuestions(courseId,typeId,page,pageSize);
 
-        FileUtils.writeStringToFile(new File("./result-json.txt"),"[\n", StandardCharsets.UTF_8,true);
+        FileUtils.writeStringToFile(new File(filePath),"[\n", StandardCharsets.UTF_8,true);
 
         for (int i = 0; i < questions.size(); i++) {
             PublishedQuestion item = questions.get(i);
@@ -217,18 +219,19 @@ public class SolrRAGServiceTest {
 
 
             log.info("================= LLM开始解答{}...",i+1);
-            Pair<String, Response<AiMessage>> responsePair1 = ragService.ask(item.getTextStem(), LLMConstants.ModelKey.AZURE_BASE_4);
+            Pair<String, Response<AiMessage>> responsePair1 = ragService.ask(item.getStem(), LLMConstants.ModelKey.AZURE_BASE_4);
             Response<AiMessage> ar1 = responsePair1.getRight();
             String llmAnswerExp = ar1.content().text();
             temp.setLlmAnswerExp(llmAnswerExp);
             log.info("================= LLM解答 {} 结束...",i+1);
 
+            Thread.sleep(2000);
 
             log.info("----------------- LLM + RAG 开始解答...");
             Map<String,String> conditionMaps = new HashMap<>();
             conditionMaps.put(MilvusConstants.Field.QUESTION_COURSEID, String.valueOf(courseId));
             conditionMaps.put(MilvusConstants.Field.QUESTION_TYPEID, typeId);
-            Pair<String, Response<AiMessage>> ragResponsePair2 = ragService.retrieveAndAsk(conditionMaps,item.getTextStem(), LLMConstants.ModelKey.AZURE_BASE_4,3,0.6d);
+            Pair<String, Response<AiMessage>> ragResponsePair2 = ragService.retrieveAndAsk(conditionMaps,item.getStem(), LLMConstants.ModelKey.AZURE_BASE_4,3,0.6d);
 
             String ragLlmDetailInfo = ragResponsePair2.getLeft();
             String ragAnswerExp = ragResponsePair2.getRight().content().text();
@@ -238,47 +241,115 @@ public class SolrRAGServiceTest {
             log.info("llm + rag response:\n\n{}", ragAnswerExp);
             log.info("------------------ LLM + RAG 解答结束...");
 
-            Thread.sleep(6000);
+            Thread.sleep(3000);
             String json = JSON.toJSONString(temp);
             log.info("result json:{}",json);
-            FileUtils.writeStringToFile(new File("./result-json.txt"),String.format("%s,\n",json), StandardCharsets.UTF_8,true);
+            FileUtils.writeStringToFile(new File(filePath),String.format("%s,\n",json), StandardCharsets.UTF_8,true);
 
         }
 
-        FileUtils.writeStringToFile(new File("./result-json.txt"),"]", StandardCharsets.UTF_8,true);
+        FileUtils.writeStringToFile(new File(filePath),"]", StandardCharsets.UTF_8,true);
     }
 
+
+
+    static Pattern pattern = Pattern.compile("^(.*?)\\n【解析】", Pattern.DOTALL);
 
     /**
      * 统计正确率
      */
     @Test
     public void statisticalAccuracy() throws IOException {
+        transLiteJsonFile();
+        // transLiteAnswerJson();
+    }
+
+
+
+    /**
+     * 将完整json文件，提取出答案和解析，生成一个精简的json文件
+     * @throws IOException
+     */
+
+    public void transLiteJsonFile() throws IOException {
         // 读取JSON文件
-        String json = FileUtils.readFileToString(new File("./result-json.txt"), StandardCharsets.UTF_8);
+        String json = FileUtils.readFileToString(new File("./result-json2.txt"), StandardCharsets.UTF_8);
+        FileUtils.writeStringToFile(new File("./result-lite-json2.txt"),"[\n", StandardCharsets.UTF_8,true);
+        List<QuestionEvaluation> questionEvaluations = JSON.parseArray(json, QuestionEvaluation.class);
 
-        Pattern pattern = Pattern.compile("【答案】：(.*?)【解析】：");
+        for (QuestionEvaluation questionEvaluation : questionEvaluations) {
 
+            log.info("id:{}", questionEvaluation.getId());
+            String llmAnswerExp = questionEvaluation.getLlmAnswerExp();
+            String ragAnswerExp = questionEvaluation.getRagAnswerExp();
+
+            // 正确答案
+            String answer = QmlTextParser.parseText(questionEvaluation.getAnswer());
+            String textStem = questionEvaluation.getTextStem();
+            log.info("正确答案：{}",QmlTextParser.parseText(answer));
+
+            JSONObject object = new JSONObject();
+            object.put("id",questionEvaluation.getId());
+            object.put("textStem",textStem);
+            object.put("answer",answer);
+            object.put("llmAnswerExp",llmAnswerExp);
+            object.put("ragAnswerExp",ragAnswerExp);
+
+            FileUtils.writeStringToFile(new File("./result-lite-json2.txt"),String.format("%s,\n",object.toJSONString()), StandardCharsets.UTF_8,true);
+        }
+
+        FileUtils.writeStringToFile(new File("./result-lite-json2.txt"),"\n]", StandardCharsets.UTF_8,true);
+    }
+
+
+    public void transLiteAnswerJson() throws IOException {
+
+        String json = FileUtils.readFileToString(new File("./result-lite-json.txt"), StandardCharsets.UTF_8);
+        FileUtils.writeStringToFile(new File("./result-lite-answer-json.txt"),"\n[", StandardCharsets.UTF_8,true);
 
         List<QuestionEvaluation> questionEvaluations = JSON.parseArray(json, QuestionEvaluation.class);
         for (QuestionEvaluation questionEvaluation : questionEvaluations) {
 
             log.info("id:{}", questionEvaluation.getId());
             String llmAnswerExp = questionEvaluation.getLlmAnswerExp();
-            Matcher matcher1 = pattern.matcher(llmAnswerExp);
-            if (matcher1.find()) {
-                log.info("llm answer:{}", matcher1.group(1));
-            }
             String ragAnswerExp = questionEvaluation.getRagAnswerExp();
-            Matcher matcher2 = pattern.matcher(ragAnswerExp);
-            if (matcher2.find()) {
-                log.info("rag llm answer:{}", matcher2.group(1));
-            }
-
 
             // 正确答案
-            String answer = questionEvaluation.getAnswer();
-            log.info("正确答案：{}",QmlTextParser.parseText(answer));
+
+
+            JSONObject object = new JSONObject();
+            object.put("id",questionEvaluation.getId());
+            object.put("textStem",questionEvaluation.getTextStem());
+            object.put("answer",questionEvaluation.getAnswer());
+            object.put("llmAnswerExp",extractAnswer(llmAnswerExp));
+            object.put("ragAnswerExp",extractAnswer(ragAnswerExp));
+
+            FileUtils.writeStringToFile(new File("./result-lite-answer-json.txt"),String.format("%s,\n",object.toJSONString()), StandardCharsets.UTF_8,true);
+        }
+        FileUtils.writeStringToFile(new File("./result-lite-answer-json.txt"),"\n]", StandardCharsets.UTF_8,true);
+    }
+
+
+    public String extractAnswer(String answerExp){
+        Matcher matcher = pattern.matcher(answerExp);
+        if (matcher.find()) {
+            String group = matcher.group(1);
+            return group;
+        }
+        return answerExp;
+    }
+
+
+    public static void main(String[] args) {
+        String s = "【答案】：push ahead with；\n【解析】：考查词汇辨析。句意：因此，这些国家总是在努力偿还债务；本可以用于健康、教育和长期发展的政府财政，却被用于偿还债务。在这个句子中，我们需要一个短语来描述这些国家正在努力做的事情，即偿还债务。\"dive right in\"意为“立即开始”，\"catch up on\"意为“赶上”，\"push ahead with\"意为“继续进行”，\"split off from\"意为“从...分离”。根据句意，只有\"push ahead with\"符合语境，表示这些国家正在努力偿还债务。故选\"push ahead with\"。";
+        // 定义正则表达式
+        // 提取答案
+        Matcher matcher = pattern.matcher(s);
+
+        if (matcher.find()) {
+            String group = matcher.group(1);
+            System.out.println(group);
         }
     }
+
 }

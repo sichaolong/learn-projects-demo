@@ -16,6 +16,7 @@ import scl.pojo.Pagination;
 import scl.pojo.PublishedQuestion;
 import scl.pojo.QuestionSearchParams;
 import scl.solr.SolrService;
+import scl.utils.qml.QmlTextParser;
 
 import java.util.Arrays;
 import java.util.List;
@@ -71,6 +72,8 @@ public class SolrRAGService implements RAGService {
         // recall
         QuestionSearchParams params = new QuestionSearchParams();
         params.setStem(question);
+        // 纯文本召回
+        params.setTextStem(QmlTextParser.parseText(question));
         params.setCourseId(Integer.parseInt(conditionMaps.getOrDefault("courseId", "0")));
         params.setTypeId(conditionMaps.getOrDefault("typeId", ""));
         params.setRows(recallMaxResults);

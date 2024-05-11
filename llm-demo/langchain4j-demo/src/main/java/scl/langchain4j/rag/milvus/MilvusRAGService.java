@@ -80,7 +80,7 @@ public class MilvusRAGService implements RAGService {
         if (StringUtils.isBlank(information)) {
             return null;
         }
-        return PROMPT_USER_RAG_TEMPLATE_3.apply(Map.of("question", question, "information", Matcher.quoteReplacement(information)));
+        return PROMPT_USER_RAG_TEMPLATE_4.apply(Map.of("question", question, "information", Matcher.quoteReplacement(information)));
     }
 
     /**

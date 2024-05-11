@@ -29,7 +29,7 @@ public class MilvusConfig {
     /**
      * 是否开启RAG检索增强
      */
-    @Value("${milvus.rag.retrieveEmbeddingsOnSearch:false}")
+    @Value("${milvus.rag.retrieveEmbeddingsOnSearch:true}")
     private boolean retrieveEmbeddingsOnSearch;
 
     /**
