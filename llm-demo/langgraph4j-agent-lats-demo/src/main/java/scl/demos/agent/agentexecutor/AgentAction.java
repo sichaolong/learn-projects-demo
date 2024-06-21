@@ -1,4 +1,4 @@
-package dev.langchain4j.agentexecutor;
+package scl.demos.agent.agentexecutor;
 
 import dev.langchain4j.agent.tool.ToolExecutionRequest;
 import lombok.NonNull;

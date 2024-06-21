@@ -1,18 +1,19 @@
-package dev.langchain4j.agentexecutor;
+package scl.demos.agent.agentexecutor;
 
+import dev.langchain4j.agent.tool.ToolExecutionRequest;
 import dev.langchain4j.agent.tool.ToolSpecification;
 import dev.langchain4j.data.message.*;
 import dev.langchain4j.model.chat.ChatLanguageModel;
+import dev.langchain4j.model.input.Prompt;
 import dev.langchain4j.model.input.PromptTemplate;
 import dev.langchain4j.model.output.Response;
 import lombok.Builder;
 import lombok.Singular;
-import lombok.var;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import static org.bsc.langgraph4j.utils.CollectionsUtils.mapOf;
+import static scl.demos.agent.graph.utils.CollectionsUtils.mapOf;
 
 @Builder
 public class Agent {
@@ -22,8 +23,9 @@ public class Agent {
 
 
     public Response<AiMessage> execute( String input, List<IntermediateStep> intermediateSteps ) {
-        var userMessageTemplate = PromptTemplate.from( "{{input}}" )
-                                                    .apply( mapOf( "input", input));
+        Prompt prompt = PromptTemplate.from("{{input}}")
+                .apply(mapOf("input", input));
+        var userMessageTemplate = prompt;
 
         var messages = new ArrayList<ChatMessage>();
 
@@ -32,15 +34,17 @@ public class Agent {
 
         if (!intermediateSteps.isEmpty()) {
 
-            var toolRequests = intermediateSteps.stream()
+            List<ToolExecutionRequest> collect = intermediateSteps.stream()
                     .map(IntermediateStep::action)
                     .map(AgentAction::toolExecutionRequest)
                     .collect(Collectors.toList());
+            var toolRequests = collect;
 
             messages.add(new AiMessage(toolRequests)); // reply with tool requests
 
             for (IntermediateStep step : intermediateSteps) {
-                var toolRequest = step.action().toolExecutionRequest();
+                ToolExecutionRequest toolExecutionRequest = step.action().toolExecutionRequest();
+                var toolRequest = toolExecutionRequest;
 
                 messages.add(new ToolExecutionResultMessage(toolRequest.id(), toolRequest.name(), step.observation()));
             }

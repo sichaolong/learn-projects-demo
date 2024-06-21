@@ -1,22 +1,25 @@
-package dev.langchain4j.agentexecutor;
+package scl.demos.agent.agentexecutor;
 
+import dev.langchain4j.agent.tool.ToolExecutionRequest;
 import dev.langchain4j.agent.tool.ToolSpecification;
 import dev.langchain4j.model.chat.ChatLanguageModel;
 import dev.langchain4j.model.output.FinishReason;
-import lombok.var;
-import org.bsc.async.AsyncGenerator;
-import org.bsc.langgraph4j.StateGraph;
-import org.bsc.langgraph4j.NodeOutput;
-import org.bsc.langgraph4j.state.AgentState;
-import org.bsc.langgraph4j.state.AppendableValue;
+
+import scl.demos.agent.async.AsyncGenerator;
+import scl.demos.agent.graph.GraphRepresentation;
+import scl.demos.agent.graph.NodeOutput;
+import scl.demos.agent.graph.StateGraph;
+import scl.demos.agent.graph.state.AgentState;
+import scl.demos.agent.graph.state.AppendableValue;
+import scl.demos.agent.tool.ToolInfo;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static org.bsc.langgraph4j.StateGraph.END;
-import static org.bsc.langgraph4j.action.AsyncEdgeAction.edge_async;
-import static org.bsc.langgraph4j.action.AsyncNodeAction.node_async;
-import static org.bsc.langgraph4j.utils.CollectionsUtils.mapOf;
+import static scl.demos.agent.graph.StateGraph.END;
+import static scl.demos.agent.graph.action.AsyncEdgeAction.edge_async;
+import static scl.demos.agent.graph.action.AsyncNodeAction.node_async;
+import static scl.demos.agent.graph.utils.CollectionsUtils.mapOf;
 
 public class AgentExecutor {
 
@@ -29,10 +32,10 @@ public class AgentExecutor {
         Optional<String> input() {
             return value("input");
         }
-        Optional<AgentOutcome> agentOutcome() {
+        public Optional<AgentOutcome> agentOutcome() {
             return value("agent_outcome");
         }
-        AppendableValue<IntermediateStep> intermediateSteps() {
+        public AppendableValue<IntermediateStep> intermediateSteps() {
             return appendableValue("intermediate_steps");
         }
 
@@ -41,8 +44,9 @@ public class AgentExecutor {
 
     Map<String,Object> runAgent( Agent agentRunnable, State state ) throws Exception {
 
-        var input = state.input()
-                        .orElseThrow(() -> new IllegalArgumentException("no input provided!"));
+        String s = state.input()
+                .orElseThrow(() -> new IllegalArgumentException("no input provided!"));
+        var input = s;
 
         var intermediateSteps = state.intermediateSteps().values();
 
@@ -50,21 +54,23 @@ public class AgentExecutor {
 
         if( response.finishReason() == FinishReason.TOOL_EXECUTION ) {
 
-            var toolExecutionRequests = response.content().toolExecutionRequests();
+            List<ToolExecutionRequest> toolExecutionRequests1 = response.content().toolExecutionRequests();
+            var toolExecutionRequests = toolExecutionRequests1;
             var action = new AgentAction( toolExecutionRequests.get(0), "");
 
             return mapOf("agent_outcome", new AgentOutcome( action, null ) );
 
         }
         else {
-            var result = response.content().text();
+            String text = response.content().text();
+            var result = text;
             var finish = new AgentFinish( mapOf("returnValues", result), result );
 
             return mapOf("agent_outcome", new AgentOutcome( null, finish ) );
         }
 
     }
-    Map<String,Object> executeTools( List<ToolInfo> toolInfoList, State state ) throws Exception {
+    Map<String,Object> executeTools(List<ToolInfo> toolInfoList, State state ) throws Exception {
 
         var agentOutcome = state.agentOutcome().orElseThrow(() -> new IllegalArgumentException("no agentOutcome provided!"));
 
@@ -79,7 +85,8 @@ public class AgentExecutor {
                             .findFirst()
                             .orElseThrow(() -> new IllegalStateException("no tool found for: " + toolExecutionRequest.name()));
 
-        var result = tool.executor().execute( toolExecutionRequest, null );
+        String execute = tool.executor().execute(toolExecutionRequest, null);
+        var result = execute;
 
         return mapOf("intermediate_steps", new IntermediateStep( agentOutcome.action(), result ) );
 
@@ -96,7 +103,8 @@ public class AgentExecutor {
     public AsyncGenerator<NodeOutput<State>> execute(ChatLanguageModel chatLanguageModel, Map<String, Object> inputs, List<Object> objectsWithTools) throws Exception {
 
 
-        var toolInfoList = ToolInfo.fromList( objectsWithTools );
+        List<ToolInfo> toolInfos = ToolInfo.fromList(objectsWithTools);
+        var toolInfoList = toolInfos;
 
         final List<ToolSpecification> toolSpecifications = toolInfoList.stream()
                 .map(ToolInfo::specification)
@@ -128,7 +136,8 @@ public class AgentExecutor {
         workflow.addEdge("action", "agent");
 
         var app = workflow.compile();
-
+        var result = app.getGraph(GraphRepresentation.Type.PLANTUML);
+        System.out.println(result.getContent());
         return  app.stream( inputs );
     }
 }
