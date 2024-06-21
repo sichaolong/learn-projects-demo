@@ -1,6 +1,5 @@
-package org.bsc.langgraph4j.state;
+package scl.demos.agent.graph.state;
 
-import lombok.var;
 
 import java.util.*;
 import java.util.stream.Collectors;

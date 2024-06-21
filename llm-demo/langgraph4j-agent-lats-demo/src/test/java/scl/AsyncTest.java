@@ -1,16 +1,19 @@
-package org.bsc.langgraph4j;
+package scl;
 
-import lombok.var;
-import org.bsc.async.AsyncGenerator;
-import org.bsc.async.AsyncGeneratorQueue;
+
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import scl.demos.agent.async.AsyncGenerator;
+import scl.demos.agent.async.AsyncGeneratorQueue;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 
+
 import static java.util.concurrent.CompletableFuture.completedFuture;
-import static org.bsc.langgraph4j.utils.CollectionsUtils.listOf;
+import static scl.demos.agent.graph.utils.CollectionsUtils.listOf;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class AsyncTest {
@@ -19,9 +22,10 @@ public class AsyncTest {
 
         String[] myArray = { "e1", "e2", "e3", "e4", "e5"};
 
-        final var it = new AsyncGenerator<String>() {
+        AsyncGenerator<String> strings = new AsyncGenerator<>() {
 
             private int cursor = 0;
+
             @Override
             public Data<String> next() {
 
@@ -32,6 +36,7 @@ public class AsyncTest {
                 return Data.of(completedFuture(myArray[cursor++]));
             }
         };
+        final var it = strings;
 
         List<String> result = new ArrayList<>();
 
@@ -51,11 +56,12 @@ public class AsyncTest {
     @Test
     public void asyncQueueTest() throws Exception {
 
-        final var it = AsyncGeneratorQueue.of( new LinkedBlockingQueue<AsyncGenerator.Data<String>>(), queue -> {
-            for( int i = 0 ; i < 10 ; ++i ) {
-                queue.add( AsyncGenerator.Data.of( completedFuture("e"+i )) );
+        AsyncGenerator<String> of = AsyncGeneratorQueue.of(new LinkedBlockingQueue<AsyncGenerator.Data<String>>(), queue -> {
+            for (int i = 0; i < 10; ++i) {
+                queue.add(AsyncGenerator.Data.of(completedFuture("e" + i)));
             }
         });
+        final var it = of;
 
         List<String> result = new ArrayList<>();
 
@@ -74,34 +80,36 @@ public class AsyncTest {
     public void asyncQueueToStreamTest() throws Exception {
 
         // AsyncQueue initialized with a direct executor. No thread is used on next() invocation
-        final var it = AsyncGeneratorQueue.of( new LinkedBlockingQueue<AsyncGenerator.Data<String>>(), queue -> {
-            for( int i = 0 ; i < 10 ; ++i ) {
-                queue.add( AsyncGenerator.Data.of( completedFuture("e"+i )) );
+        AsyncGenerator<String> of = AsyncGeneratorQueue.of(new LinkedBlockingQueue<AsyncGenerator.Data<String>>(), queue -> {
+            for (int i = 0; i < 10; ++i) {
+                queue.add(AsyncGenerator.Data.of(completedFuture("e" + i)));
             }
         });
+        final var it = of;
 
         var result = it.stream();
 
         var lastElement =   result.reduce((a, b) -> b);
 
-        assertTrue( lastElement.isPresent());
-        assertEquals( lastElement.get(), "e9" );
+        Assertions.assertTrue( lastElement.isPresent());
+        Assertions.assertEquals( lastElement.get(), "e9" );
 
     }
 
     @Test
     public void asyncQueueIteratorExceptionTest() throws Exception {
 
-        final var it = AsyncGeneratorQueue.of( new LinkedBlockingQueue<AsyncGenerator.Data<String>>(), queue -> {
-            for( int i = 0 ; i < 10 ; ++i ) {
-                queue.add( AsyncGenerator.Data.of( completedFuture("e"+i )) );
+        AsyncGenerator<String> of = AsyncGeneratorQueue.of(new LinkedBlockingQueue<AsyncGenerator.Data<String>>(), queue -> {
+            for (int i = 0; i < 10; ++i) {
+                queue.add(AsyncGenerator.Data.of(completedFuture("e" + i)));
 
-                if( i == 2 ) {
+                if (i == 2) {
                     throw new RuntimeException("error test");
                 }
             }
 
         });
+        final var it = of;
 
         var result = it.stream();
 
@@ -112,16 +120,17 @@ public class AsyncTest {
     @Test
     public void asyncQueueForEachExceptionTest() throws Exception {
 
-        final var it = AsyncGeneratorQueue.of( new LinkedBlockingQueue<AsyncGenerator.Data<String>>(), queue -> {
-            for( int i = 0 ; i < 10 ; ++i ) {
-                queue.add( AsyncGenerator.Data.of( completedFuture("e"+i )) );
+        AsyncGenerator<String> of = AsyncGeneratorQueue.of(new LinkedBlockingQueue<AsyncGenerator.Data<String>>(), queue -> {
+            for (int i = 0; i < 10; ++i) {
+                queue.add(AsyncGenerator.Data.of(completedFuture("e" + i)));
 
-                if( i == 2 ) {
+                if (i == 2) {
                     throw new RuntimeException("error test");
                 }
             }
 
         });
+        final var it = of;
 
         assertThrows( Exception.class, () -> it.forEachAsync( System.out::println ).get() );
 

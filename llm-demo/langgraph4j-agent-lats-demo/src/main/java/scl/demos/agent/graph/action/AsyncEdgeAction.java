@@ -1,6 +1,6 @@
-package org.bsc.langgraph4j.action;
+package scl.demos.agent.graph.action;
 
-import org.bsc.langgraph4j.state.AgentState;
+import scl.demos.agent.graph.state.AgentState;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;

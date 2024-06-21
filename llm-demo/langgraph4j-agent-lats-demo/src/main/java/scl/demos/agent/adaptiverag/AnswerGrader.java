@@ -1,4 +1,4 @@
-package dev.langchain4j.adaptiverag;
+package scl.demos.agent.adaptiverag;
 
 import dev.langchain4j.model.chat.ChatLanguageModel;
 import dev.langchain4j.model.input.Prompt;
@@ -38,13 +38,14 @@ public class AnswerGrader implements Function<AnswerGrader.Arguments,AnswerGrade
         Score invoke(String userMessage);
     }
 
-    String openApiKey;
+    String openAIBaseUrl;
 
     @Override
     public Score apply(Arguments args) {
         ChatLanguageModel chatLanguageModel = OpenAiChatModel.builder()
-                .apiKey( openApiKey )
-                .modelName( "gpt-3.5-turbo-0125" )
+                .baseUrl( openAIBaseUrl )
+                .apiKey("xxx")
+                .modelName( "gpt-4o" )
                 .timeout(Duration.ofMinutes(2))
                 .logRequests(true)
                 .logResponses(true)

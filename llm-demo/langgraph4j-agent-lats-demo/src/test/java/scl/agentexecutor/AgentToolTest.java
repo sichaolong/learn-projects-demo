@@ -1,11 +1,16 @@
-package dev.langchain4j.agentexecutor;
+package scl.agentexecutor;
 
-import dev.langchain4j.DotEnvConfig;
+
 import dev.langchain4j.model.openai.OpenAiChatModel;
 import dev.langchain4j.model.output.FinishReason;
-import lombok.var;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import scl.demos.config.DotEnvConfig;
+import scl.demos.agent.agentexecutor.Agent;
+import scl.demos.agent.tool.TestTool;
+import scl.demos.agent.tool.ToolInfo;
 
 import java.util.stream.Collectors;
 
@@ -13,7 +18,7 @@ import static java.lang.String.format;
 import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class AgentTest {
+public class AgentToolTest {
 
     @BeforeAll
     public static void loadEnv() {
@@ -23,11 +28,12 @@ public class AgentTest {
     @Test
     public void runAgentTest() throws Exception  {
 
-        assertTrue(DotEnvConfig.valueOf("OPENAI_API_KEY").isPresent());
+        Assertions.assertTrue(DotEnvConfig.valueOf("OPENAI_BASE_URL").isPresent());
 
         var chatLanguageModel = OpenAiChatModel.builder()
-                .apiKey( DotEnvConfig.valueOf("OPENAI_API_KEY").get() )
-                .modelName( "gpt-3.5-turbo-0613" )
+                .baseUrl( DotEnvConfig.valueOf("OPENAI_BASE_URL").get() )
+                .apiKey("xxx")
+                .modelName( "gpt-3.5-turbo" )
                 .logResponses(true)
                 .maxRetries(2)
                 .temperature(0.0)
@@ -50,10 +56,11 @@ public class AgentTest {
         assertNull( content.text());
         assertTrue(content.hasToolExecutionRequests());
         var toolExecutionRequests = content.toolExecutionRequests();
-        assertEquals(1, toolExecutionRequests.size());
+        System.out.println(toolExecutionRequests);
+        assertEquals(2, toolExecutionRequests.size());
         var toolExecutionRequest = toolExecutionRequests.get(0);
         assertEquals("execTest", toolExecutionRequest.name());
-        assertEquals("{  \"arg0\": \"hello world\"}", toolExecutionRequest.arguments().replaceAll("\n",""));
+        assertEquals("{\"arg0\": \"AI test with message: 'hello world'\"}", toolExecutionRequest.arguments().replaceAll("\n",""));
 
     }
 }

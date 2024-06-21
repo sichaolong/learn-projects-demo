@@ -1,0 +1,23 @@
+spring:
+  ai:
+    openai:
+      api-key: "..."
+      base-url: "http://47.89.228.214"
+    azure:
+      openai:
+        api-key: "8d728a3da84146a7a55396a7e8abb3ea"
+        endpoint: "https://xkwopenai.openai.azure.com/"
+        chat:
+          options:
+            deployment-name: base4
+    haoweilai:
+      mathgpt:
+        access-key: "1237825790071013376"
+        secret-key: "b56b964eb6064891aaf9e8f4bdfb01da"
+        base-url: "https://openai.100tal.com/"
+        http-path: "aitext/multi-70b/multi-70b/http"
+        stream: false
+        n: 1
+        # stream
+        ws-base-url: "wss://openai.100tal.com/"
+        ws-path: "aitext/multi-70b/multi-70b/ws"

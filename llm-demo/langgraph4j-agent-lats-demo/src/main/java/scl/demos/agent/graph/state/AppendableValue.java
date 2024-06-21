@@ -1,4 +1,4 @@
-package org.bsc.langgraph4j.state;
+package scl.demos.agent.graph.state;
 
 import java.util.*;
 
