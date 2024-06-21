@@ -1,14 +1,15 @@
-package org.bsc.langgraph4j;
+package scl.demos.agent.graph;
 
 import lombok.extern.slf4j.Slf4j;
-import lombok.var;
-import org.bsc.async.AsyncGenerator;
-import org.bsc.async.AsyncGeneratorQueue;
-import org.bsc.langgraph4j.action.AsyncNodeAction;
-import org.bsc.langgraph4j.state.AgentState;
+import scl.demos.agent.async.AsyncGenerator;
+import scl.demos.agent.async.AsyncGeneratorQueue;
+import scl.demos.agent.graph.action.AsyncEdgeAction;
+import scl.demos.agent.graph.action.AsyncNodeAction;
+import scl.demos.agent.graph.state.AgentState;
 
 import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import static java.lang.String.format;
@@ -60,8 +61,9 @@ public class CompiledGraph<State extends AgentState> {
             return route.id();
         }
         if( route.value() != null ) {
-            var condition = route.value().action();
-            var newRoute = condition.apply(state).get();
+            AsyncEdgeAction condition = route.value().action();
+            Object o = condition.apply(state).get();
+            var newRoute = o;
             var result = route.value().mappings().get(newRoute);
             if( result == null ) {
                 throw StateGraph.RunnableErrors.missingNodeInEdgeMapping.exception(nodeId, newRoute);
@@ -100,14 +102,16 @@ public class CompiledGraph<State extends AgentState> {
         return AsyncGeneratorQueue.of(new LinkedBlockingQueue<>(), queue -> {
 
             try  {
-                var currentState = stateGraph.getStateFactory().apply(inputs);
+                State apply = stateGraph.getStateFactory().apply(inputs);
+                var currentState = apply;
 
                 var currentNodeId = this.getEntryPoint( currentState );
 
                 Map<String, Object> partialState;
 
                 for(int i = 0; i < maxIterations &&  !Objects.equals(currentNodeId, StateGraph.END); ++i ) {
-                    var action = nodes.get(currentNodeId);
+                    AsyncNodeAction<State> stateAsyncNodeAction = nodes.get(currentNodeId);
+                    var action = stateAsyncNodeAction;
                     if (action == null) {
                         throw StateGraph.RunnableErrors.missingNode.exception(currentNodeId);
                     }
@@ -145,11 +149,13 @@ public class CompiledGraph<State extends AgentState> {
      */
     public Optional<State> invoke(Map<String,Object> inputs ) throws Exception {
 
-        var sourceIterator = stream(inputs).iterator();
+        Iterator<NodeOutput<State>> iterator = stream(inputs).iterator();
+        var sourceIterator = iterator;
 
-        var result = StreamSupport.stream(
+        Stream<NodeOutput<State>> stream = StreamSupport.stream(
                 Spliterators.spliteratorUnknownSize(sourceIterator, Spliterator.ORDERED),
                 false);
+        var result = stream;
 
         return  result.reduce((a, b) -> b).map( NodeOutput::state);
     }
@@ -188,7 +194,7 @@ public class CompiledGraph<State extends AgentState> {
                 });
 
 
-        var entryPoint = stateGraph.getEntryPoint();
+        EdgeValue<State> entryPoint = stateGraph.getEntryPoint();
         if( entryPoint.id() != null  ) {
             sb.append( format("start -down-> \"%s\"\n", entryPoint.id() ));
         }

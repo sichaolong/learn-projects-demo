@@ -1,4 +1,4 @@
-package org.bsc.langgraph4j.utils;
+package scl.demos.agent.graph.utils;
 
 import java.util.Arrays;
 import java.util.HashMap;

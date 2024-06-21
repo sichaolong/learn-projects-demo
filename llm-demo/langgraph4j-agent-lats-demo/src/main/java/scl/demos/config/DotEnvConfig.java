@@ -1,4 +1,4 @@
-package dev.langchain4j;
+package scl.demos.config;
 
 
 import java.io.FileReader;

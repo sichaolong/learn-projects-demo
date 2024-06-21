@@ -1,9 +1,9 @@
-package org.bsc.langgraph4j;
+package scl.demos.agent.graph;
 
 
 import lombok.Value;
 import lombok.experimental.Accessors;
-import org.bsc.langgraph4j.state.AgentState;
+import scl.demos.agent.graph.state.AgentState;
 
 import java.util.Objects;
 

@@ -1,6 +1,6 @@
-package org.bsc.langgraph4j.action;
+package scl.demos.agent.graph.action;
 
-import org.bsc.langgraph4j.state.AgentState;
+import scl.demos.agent.graph.state.AgentState;
 
 /**
  * Represents an edge action that operates on an agent state and returns a result.
