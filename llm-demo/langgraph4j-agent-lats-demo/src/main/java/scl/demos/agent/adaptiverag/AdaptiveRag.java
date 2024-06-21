@@ -1,38 +1,31 @@
-package dev.langchain4j.adaptiverag;
+package scl.demos.agent.adaptiverag;
 
 import dev.langchain4j.data.segment.TextSegment;
 import dev.langchain4j.store.embedding.EmbeddingSearchResult;
 import lombok.extern.slf4j.Slf4j;
-import lombok.var;
-import org.bsc.langgraph4j.CompiledGraph;
-import org.bsc.langgraph4j.GraphRepresentation;
-import org.bsc.langgraph4j.StateGraph;
-import org.bsc.langgraph4j.state.AgentState;
 
-import java.io.FileInputStream;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.logging.LogManager;
+import scl.demos.agent.graph.CompiledGraph;
+import scl.demos.agent.graph.StateGraph;
+import scl.demos.agent.graph.state.AgentState;
+
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
-import static org.bsc.langgraph4j.StateGraph.END;
-import static org.bsc.langgraph4j.action.AsyncEdgeAction.edge_async;
-import static org.bsc.langgraph4j.action.AsyncNodeAction.node_async;
-import static org.bsc.langgraph4j.utils.CollectionsUtils.listOf;
-import static org.bsc.langgraph4j.utils.CollectionsUtils.mapOf;
+import static scl.demos.agent.graph.StateGraph.END;
+import static scl.demos.agent.graph.action.AsyncEdgeAction.edge_async;
+import static scl.demos.agent.graph.action.AsyncNodeAction.node_async;
+import static scl.demos.agent.graph.utils.CollectionsUtils.mapOf;
 
-@Slf4j( topic="AdaptiveRag")
+@Slf4j(topic = "AdaptiveRag")
 public class AdaptiveRag {
 
     /**
      * Represents the state of our graph.
-     *     Attributes:
-     *         question: question
-     *         generation: LLM generation
-     *         documents: list of documents
+     * Attributes:
+     * question: question
+     * generation: LLM generation
+     * documents: list of documents
      */
     public static class State extends AgentState {
 
@@ -42,32 +35,35 @@ public class AdaptiveRag {
 
         public String question() {
             Optional<String> result = value("question");
-            return result.orElseThrow( () -> new IllegalStateException( "question is not set!" ) );
+            return result.orElseThrow(() -> new IllegalStateException("question is not set!"));
         }
+
         public Optional<String> generation() {
             return value("generation");
 
         }
+
         public List<String> documents() {
-            Optional<List<String>> result =  value("documents");
+            Optional<List<String>> result = value("documents");
             return result.orElse(emptyList());
         }
 
     }
 
-    private final String openApiKey;
-    private final String tavilyApiKey;
-    private final ChromaStore chroma;
+    private final String openAIBaseUrl;
 
-    public AdaptiveRag( String openApiKey, String tavilyApiKey ) {
-        Objects.requireNonNull(openApiKey, "no OPENAI APIKEY provided!");
-        Objects.requireNonNull(tavilyApiKey, "no TAVILY APIKEY provided!");
-        this.openApiKey = openApiKey;
-        this.tavilyApiKey = tavilyApiKey;
-        this.chroma = ChromaStore.of(openApiKey);
 
+    public AdaptiveRag(String openAIBaseUrl) {
+        Objects.requireNonNull(openAIBaseUrl, "no OPENAI BASEURL provided!");
+        this.openAIBaseUrl = openAIBaseUrl;
     }
 
+    /**
+     * Node: Retrieve documents
+     *
+     * @param state The current graph state
+     * @return New key added to state, documents, that contains retrieved documents
+     */
     /**
      * Node: Retrieve documents
      * @param state The current graph state
@@ -78,13 +74,13 @@ public class AdaptiveRag {
 
         String question = state.question();
 
-        EmbeddingSearchResult<TextSegment> relevant = this.chroma.search( question );
+//        EmbeddingSearchResult<TextSegment> relevant = this.chroma.search( question );
+//
+//        List<String> documents = relevant.matches().stream()
+//                .map( m -> m.embedded().text() )
+//                .collect(Collectors.toList());
 
-        List<String> documents = relevant.matches().stream()
-                .map( m -> m.embedded().text() )
-                .collect(Collectors.toList());
-
-        return mapOf( "documents", documents , "question", question );
+        return mapOf( "documents", Arrays.asList("答案是：sichaolong") , "question", question );
     }
 
     /**
@@ -99,7 +95,7 @@ public class AdaptiveRag {
         String question = state.question();
         List<String> documents = state.documents();
 
-        String generation = Generation.of(openApiKey).apply(question, documents); // service
+        String generation = Generation.of(openAIBaseUrl).apply(question, documents); // service
 
         return mapOf("generation", generation);
     }
@@ -116,7 +112,7 @@ public class AdaptiveRag {
 
         List<String> documents = state.documents();
 
-        final RetrievalGrader grader = RetrievalGrader.of( openApiKey );
+        final RetrievalGrader grader = RetrievalGrader.of( openAIBaseUrl );
 
         List<String> filteredDocs =  documents.stream()
                 .filter( d -> {
@@ -145,7 +141,7 @@ public class AdaptiveRag {
 
         String question = state.question();
 
-        String betterQuestion = QuestionRewriter.of( openApiKey ).apply( question );
+        String betterQuestion = QuestionRewriter.of( openAIBaseUrl ).apply( question );
 
         return mapOf( "question", betterQuestion );
     }
@@ -160,13 +156,8 @@ public class AdaptiveRag {
 
         String question = state.question();
 
-        var result = WebSearchTool.of( tavilyApiKey ).apply(question);
 
-        var webResult = result.stream()
-                            .map( content -> content.textSegment().text() )
-                            .collect(Collectors.joining("\n"));
-
-        return mapOf( "documents", listOf( webResult ) );
+        return mapOf( "documents", Arrays.asList("{}") );
     }
 
     /**
@@ -179,7 +170,7 @@ public class AdaptiveRag {
 
         String question = state.question();
 
-        var source = QuestionRouter.of( openApiKey ).apply( question );
+        var source = QuestionRouter.of( openAIBaseUrl ).apply( question );
         if( source == QuestionRouter.Type.web_search ) {
             log.debug("---ROUTE QUESTION TO WEB SEARCH---");
         }
@@ -220,14 +211,14 @@ public class AdaptiveRag {
                 .orElseThrow( () -> new IllegalStateException( "generation is not set!" ) );
 
 
-        HallucinationGrader.Score score = HallucinationGrader.of( openApiKey )
-                                            .apply( HallucinationGrader.Arguments.of(documents, generation));
+        HallucinationGrader.Score score = HallucinationGrader.of( openAIBaseUrl )
+                .apply( HallucinationGrader.Arguments.of(documents, generation));
 
         if(Objects.equals(score.binaryScore, "yes")) {
             log.debug( "---DECISION: GENERATION IS GROUNDED IN DOCUMENTS---" );
             log.debug("---GRADE GENERATION vs QUESTION---");
-            AnswerGrader.Score score2 = AnswerGrader.of( openApiKey )
-                                            .apply( AnswerGrader.Arguments.of(question, generation) );
+            AnswerGrader.Score score2 = AnswerGrader.of( openAIBaseUrl )
+                    .apply( AnswerGrader.Arguments.of(question, generation) );
             if( Objects.equals( score2.binaryScore, "yes") ) {
                 log.debug( "---DECISION: GENERATION ADDRESSES QUESTION---" );
                 return "useful";
@@ -255,18 +246,19 @@ public class AdaptiveRag {
         workflow.setConditionalEntryPoint(
                 edge_async(this::routeQuestion),
                 mapOf(
-                    "web_search", "web_search",
-                    "vectorstore", "retrieve"
+                        "web_search", "web_search",
+                        "knowledgebase", "retrieve"
                 ));
 
         workflow.addEdge("web_search", "generate");
         workflow.addEdge("retrieve", "grade_documents");
+
         workflow.addConditionalEdges(
                 "grade_documents",
                 edge_async(this::decideToGenerate),
                 mapOf(
-                    "transform_query","transform_query",
-                    "generate", "generate"
+                        "transform_query","transform_query",
+                        "generate", "generate"
                 ));
         workflow.addEdge("transform_query", "retrieve");
         workflow.addConditionalEdges(
@@ -279,34 +271,6 @@ public class AdaptiveRag {
                 ));
 
         return workflow.compile();
-    }
-
-    public static void main( String[] args ) throws Exception {
-        try(FileInputStream configFile = new FileInputStream("logging.properties")) {
-            LogManager.getLogManager().readConfiguration(configFile);
-        };
-
-        AdaptiveRag adaptiveRagTest = new AdaptiveRag( System.getenv("OPENAI_API_KEY"), System.getenv("TAVILY_API_KEY"));
-
-        var graph = adaptiveRagTest.buildGraph();
-
-        var result = graph.stream( mapOf( "question", "What player at the Bears expected to draft first in the 2024 NFL draft?" ) );
-        // var result = graph.stream( mapOf( "question", "What kind the agent memory do iu know?" ) );
-
-        String generation = "";
-        for( var r : result ) {
-            System.out.printf( "Node: '%s':\n", r.node() );
-
-            generation = r.state().generation().orElse( "")
-            ;
-        }
-
-        System.out.println( generation );
-
-        // generate plantuml script
-        // var plantUml = graph.getGraph( GraphRepresentation.Type.PLANTUML );
-        // System.out.println( plantUml );
-
     }
 
 }
