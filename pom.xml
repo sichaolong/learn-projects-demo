@@ -13,10 +13,8 @@
         <module>api-ratelimit-demo</module>
         <module>data-stego-demo</module>
         <module>ej2-query-builder-demo-scl</module>
-        <module>github-maven-demo</module>
         <module>jmh-demo</module>
         <module>mybatis-flex-demo</module>
-        <module>nexus-sonatype-maven-demo</module>
         <module>qrcode-login</module>
         <module>sharding-jdbc-demo</module>
         <module>sharding-proxy-demo</module>
@@ -24,6 +22,5 @@
         <module>llm-demo</module>
         <module>rxjava-demo</module>
         <module>text-similarity-demo</module>
-        <module>simple-java-code</module>
     </modules>
 </project>

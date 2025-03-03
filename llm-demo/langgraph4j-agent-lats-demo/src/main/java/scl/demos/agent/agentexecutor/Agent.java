@@ -17,7 +17,6 @@ import static scl.demos.agent.graph.utils.CollectionsUtils.mapOf;
 
 @Builder
 public class Agent {
-
     private final  ChatLanguageModel chatLanguageModel;
     @Singular  private final List<ToolSpecification> tools;
 
